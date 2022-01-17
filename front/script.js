@@ -1,19 +1,26 @@
-//faire le cabliste
-
-// adresse API : http://localhost:3000/api/products
-/*const ficheProduit = 
-
-<a href="./product.html?id=42">
-<article>
-  <img src=".../product01.jpg" alt="Lorem ipsum dolor sit amet, Kanap name1">
-  <h3 class="productName">Kanap name1</h3>
-  <p class="productDescription">Dis enim malesuada risus sapien gravida nulla nisl arcu. Dis enim malesuada risus sapien gravida nulla nisl arcu.</p>
-</article>
-</a>*/
-
-function fetchProducts(){
-  fetch('http://localhost:3000/api/products')
+/////// CALL OF API //////
+async function fetchProducts(){
+  await fetch('http://localhost:3000/api/products')
   .then(res => res.json())
-  .then(json => console.log(json))
+  .then((data) => (productsData = data))
 }
-fetchProducts()
+let productsData = [];
+
+////// INSERTION OF DATA IN DOM //////
+async function productInsertion(){
+  await fetchProducts()
+  let productContainer = document.getElementById('items');
+  for (let i=0; i < productsData.length; i++){
+    productContainer.innerHTML += 
+    `
+      <a href="./product.html?id=${productsData[i]._id}">
+        <article>
+          <img src="${productsData[i].imageUrl}" alt="${productsData[i].altTxt}">
+          <h3 class="productName">${productsData[i].name}</h3>
+          <p class="productDescription">${productsData[i].description}</p>
+        </article>
+      </a>
+    `
+  }
+}
+productInsertion()
