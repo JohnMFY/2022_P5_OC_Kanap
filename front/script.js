@@ -1,23 +1,24 @@
 /////// CALL OF API //////
-async function fetchProducts(){
+async function callProducts(){
   await fetch('http://localhost:3000/api/products')
   .then(res => res.json())
-  .then((data) => (productsData = data))
+  .then((data) => (productData = data))
+  .catch((error) => console.log(error))
 }
-let productsData = [];
+let productData = [];
 
 ////// INSERTION OF DATA IN DOM //////
 async function productInsertion(){
-  await fetchProducts()
+  await callProducts()
   let productContainer = document.getElementById('items');
-  for (let i=0; i < productsData.length; i++){
+  for (let i=0; i < productData.length; i++){
     productContainer.innerHTML += 
     `
-      <a href="./product.html?id=${productsData[i]._id}">
+      <a href="./product.html?id=${productData[i]._id}">
         <article>
-          <img src="${productsData[i].imageUrl}" alt="${productsData[i].altTxt}">
-          <h3 class="productName">${productsData[i].name}</h3>
-          <p class="productDescription">${productsData[i].description}</p>
+          <img src="${productData[i].imageUrl}" alt="${productData[i].altTxt}">
+          <h3 class="productName">${productData[i].name}</h3>
+          <p class="productDescription">${productData[i].description}</p>
         </article>
       </a>
     `
