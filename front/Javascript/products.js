@@ -1,11 +1,20 @@
 //hello HELL
-let urlData = new URL ('http://localhost:3000/api/products')
-let params = new URLSearchParams(window.location.search)
+fetch('http://localhost:3000/api/products')
+.then(res => res.json())
+.then(data => console.log(data))
 
-
-    fetch('http://localhost:3000/api/products')
-    .then (res => res.text())
-    .then(console.log)
+let product = new URLSearchParams(window.location.search)
+console.log(product)
+/*
+const pageProduct = async () => {
+    await fetch (`http://localhost:3000/api/products/${product}`)
+    .then((res) => res.json())
+    .then((data) => {
+        console.log(data)
+    })
+    .catch(error => console.log('ERROR'))
+}
+pageProduct();*/
 
 
 /*  **** DATA TO INSERT **** :
