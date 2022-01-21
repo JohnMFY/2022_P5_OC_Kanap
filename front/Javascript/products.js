@@ -1,21 +1,18 @@
 //hello HELL
-fetch('http://localhost:3000/api/products')
-.then(res => res.json())
-.then(data => console.log(data))
 
-let product = new URLSearchParams(window.location.search)
+let product = window.location.search.split("?").join("")
+
 console.log(product)
-/*
-const pageProduct = async () => {
-    await fetch (`http://localhost:3000/api/products/${product}`)
-    .then((res) => res.json())
-    .then((data) => {
-        console.log(data)
-    })
-    .catch(error => console.log('ERROR'))
-}
-pageProduct();*/
 
+//function not correct /!\
+let productData = []
+const fetchProduct = async () => {
+    await fetch(`http://127.0.0.1:5501/front/html/product.html?${product}`)
+    .then((res) => res.json())   
+    .then((promise) => {
+        console.log(promise)
+    }) 
+}
 
 /*  **** DATA TO INSERT **** :
 
