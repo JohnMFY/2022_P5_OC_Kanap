@@ -1,23 +1,30 @@
-//hello HELL
+// hello HELL //
 
+////// RECOVERY OF THE ID PRODUCT //////
 const productUrlId = window.location.search
 console.log(productUrlId)
 
 const UrlParams = new URLSearchParams(productUrlId)
 console.log(UrlParams)
 
-const id = UrlParams.get("id")
-console.log(id)
-//function not correct /!\
+const idProduct= UrlParams.get("id")
+console.log(idProduct)
+
+////// GET THE DATA BY THE ID //////
+
+fetch(`http://localhost:3000/api/products/${idProduct}`)
+.then(res => res.json())
+.then((data) => console.log(data))   
+
 /*
-let productData = []
-const fetchProduct = async () => {
-    await fetch(`http://127.0.0.1:5501/front/html/product.html?${product}`)
-    .then((res) => res.json())   
-    .then((promise) => {
-        console.log(promise)
-    }) 
-}*/
+let response = await fetch(`http://localhost:3000/api/products/${idProduct}`)
+    console.log(response)
+  let productData = [];
+  console.log(productData)
+  response()
+  console.log(response)
+*/
+
 
 /*  **** DATA TO INSERT **** :
 
