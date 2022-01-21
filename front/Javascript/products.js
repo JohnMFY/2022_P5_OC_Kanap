@@ -1,10 +1,15 @@
 //hello HELL
 
-let product = window.location.search.split("?").join("")
+const productUrlId = window.location.search
+console.log(productUrlId)
 
-console.log(product)
+const UrlParams = new URLSearchParams(productUrlId)
+console.log(UrlParams)
 
+const id = UrlParams.get("id")
+console.log(id)
 //function not correct /!\
+/*
 let productData = []
 const fetchProduct = async () => {
     await fetch(`http://127.0.0.1:5501/front/html/product.html?${product}`)
@@ -12,7 +17,7 @@ const fetchProduct = async () => {
     .then((promise) => {
         console.log(promise)
     }) 
-}
+}*/
 
 /*  **** DATA TO INSERT **** :
 
