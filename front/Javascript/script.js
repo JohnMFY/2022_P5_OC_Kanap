@@ -3,7 +3,8 @@ async function callProducts(){
   await fetch('http://localhost:3000/api/products')
   .then(res => res.json())
   .then((data) => (productData = data))
-  .catch((error) => console.log(error))
+  .catch((error) => console.log(error));
+  console.log(productData)
 }
 let productData = [];
 
