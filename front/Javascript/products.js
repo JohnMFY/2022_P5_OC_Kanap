@@ -7,35 +7,52 @@ const idProduct= UrlParams.get("id")
 console.log(idProduct)
 
 ////// GET THE PRODUCT DATA WITH THE ID  //////
-function callProductById(){
+const callProductById = async() =>{
    fetch(`http://localhost:3000/api/products/${idProduct}`)
    .then((res) => res.json())
    .then((data) => {
-      console.log(data);
+      productData = data
+      console.log(productData);
    })
 }
 callProductById()
-
+let productData = []
 
 ////// DATA TO INSERT //////
+const productDisplay = async () => {
+   await callProductById()
 
-/*  .then((data) => (productData = data))
-   .catch((error) => console.log(error));
-   console.log(productData)
- 
- /////// IMAGE & ALT //////
-    <div class="">
-        <!--  -->
-    </div>
+   document.querySelector('.item__img').innerHTML = `
+      <img src="http://localhost:3000/images/kanap01.jpeg" alt="Photo d'un canapé bleu, deux places">
+   `//<img src="${productData.imageUrl}" alt="${productData.altTxt}">
+   
+   document.getElementById('title').innerHTML=`
+      <h1 id="title">Kanap Sinopé</h1>
+   `//<h1 id="title">${productData.name}</h1>
+   
+   document.getElementById('price').innerHTML=`
+      <span id="price">1849</span>
+   `//<span id="price">${productData.price}</span>
 
- ////// TITLE //////
-    <h1 id="title"><!-- Nom du produit --></h1>
-
- ////// PRICE //////
-    <p>Prix : <span id="price"><!-- 42 --></span>€</p>
-
- ////// DESCRIPTION //////
-    <p id="description"><!--description --></p>
+   document.getElementById('description').innerHTML=`
+      <p id="description">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+   `//<p id="description">${productData.description}</p>
+   
+   document.getElementById('colors').innerHTML=`
+      <option value="">--SVP, choisissez une couleur --</option>
+         <option value="vert">vert</option>
+         <option value="blanc">blanc</option>
+   `  /*
+         for (let i=0; i < $productData.colors.length; i++){
+         document.getElementById('colors').innerHTML += `
+            <option value="">--SVP, choisissez une couleur --</option>
+            <option value="$productData[i].colors">$productData[i].colors</option>
+         `
+      */
+}
+productDisplay()
+/*
+il va falloir bien paramétrer la balise “a” et son attribut “href”. From brefing.
 
  ////// COLOR //////
     <select name="color-select" id="colors">
