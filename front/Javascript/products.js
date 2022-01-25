@@ -15,7 +15,7 @@ console.log(idProduct)
 }
 
 ////// DATA TO INSERT //////
-const productDisplay = async () => {
+   async function productDataDisplay(){
    await callProductById()
 
    //IMG & ALT//
@@ -43,7 +43,7 @@ const productDisplay = async () => {
       `
    }    
 }
-productDisplay()
+productDataDisplay()
 
 /*                                                  ____
        ___                                      .-~. /_"-._
