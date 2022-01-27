@@ -41,22 +41,37 @@
          }    
       }
       productDataDisplay()
-
+      
 /**//**  DATA STORE LOCALY TO BE USED ON THE CART PAGE **//**/
-      const colorsOption = document.querySelector("#colors")
 
+   ////// RECOVERY OF SELECTED OPTION DATA //////
 
+      const colorsOption = document.getElementById('colors')
+      const quantityInput = document.getElementById('quantity')
+
+   ////// EVENT LISTENER ON ADD BUTTON //////
       const addBtn = document.getElementById('addToCart')
       addBtn.addEventListener('click', (event)=>{
          event.preventDefault()
          const colorSelected = colorsOption.value
-         console.log(colorSelected)
-         /*let productOptionSelected = {
-            ProductId = productData._id,
-            ProductQuantity = 
-            ProductColor = 
-         }*/
+         const quantitySelected = quantityInput.value
+         let productOptionSelected = {
+            ProductId : idProduct,
+            ProductQuantity : quantitySelected,
+            ProductColor : colorSelected,
+         }
+         console.log(productOptionSelected)
       } )
+
+
+
+
+
+
+
+
+
+
 
 /////////* AH AH AH, YOU DIDN'T SAY THE MAGIC WORD */////////
 /*                                                  ____
