@@ -1,0 +1,1 @@
+//function cureil attack to do at the end for Vincent
