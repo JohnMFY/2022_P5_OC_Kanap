@@ -4,7 +4,6 @@ async function callProducts(){
   .then(res => res.json())
   .then((data) => (productData = data))
   .catch((error) => console.log(error));
-  console.log(productData)
 }
 let productData = [];
 

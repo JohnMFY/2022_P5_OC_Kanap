@@ -9,8 +9,7 @@
       async function callProductById(){
          await fetch(`http://localhost:3000/api/products/${idProduct}`)
          .then(res => res.json())
-         .then((data) => (productData = data))
-         console.log(productData)  
+         .then((data) => (productData = data))  
       }
 
    ////// DATA TO INSERT DYNAMICALLY IN THE DOM FOR THE PRODUCT CARD //////
@@ -49,30 +48,50 @@
       const colorsOption = document.getElementById('colors')
       const quantityInput = document.getElementById('quantity')
 
-   ////// EVENT LISTENER ON ADD BUTTON //////
+   ////// EVENT LISTENER ON ADD BUTTON TO PUT IN LOCALSTORAGE : PRODUCT ID, QUANTITY, COLOR //////
       const addBtn = document.getElementById('addToCart')
       addBtn.addEventListener('click', (event)=>{
          event.preventDefault()
          const colorSelected = colorsOption.value
          const quantitySelected = quantityInput.value
-         let productOptionSelected = {
-            ProductId : idProduct,
-            ProductQuantity : quantitySelected,
-            ProductColor : colorSelected,
-         }
-         console.log(productOptionSelected)
-      } )
 
+         //STOCK DATA IN A VARIABLE//
+            let productOptionSelected = {
+               ProductId : idProduct,
+               ProductQuantity : quantitySelected,
+               ProductColor : colorSelected,
+            }
+         
+         // GET THE DATA WHO ARE IN THE LOCAL STORAGE //
+            let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
+            //console.log(dataInLocalStorage)
 
+         // FUNCTION WHO SEND THE PRODUCT OPTIONS IN LOCAL STORAGE //
+            const AddProductLocalStorage = () =>{
+               dataInLocalStorage.push(productOptionSelected)
+               localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
+            }   
 
+         // SEND PRODUCT OPTION DATA TO LOCAL STORAGE IF THE DATA ARE NOT ALREADY ON IT AND ADJUST QUANTITY IF SAME [PRODUCT & COLOR] ADD //  
+            if (dataInLocalStorage){
 
+               const optionInArray = dataInLocalStorage.find
+               ((element) => element.ProductId === idProduct && element.ProductColor === colorSelected); 
+                  if (optionInArray) {
+                        let newQuantity =
+                        parseInt(productOptionSelected.ProductQuantity) + parseInt(optionInArray.ProductQuantity);
+                        optionInArray.ProductQuantity = newQuantity ;
+                        localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));
+                  } else {
+                      AddProductLocalStorage()
+                  }
 
-
-
-
-
-
-
+            } else {
+               dataInLocalStorage =[];
+               AddProductLocalStorage()
+            }      
+      })
+      
 /////////* AH AH AH, YOU DIDN'T SAY THE MAGIC WORD */////////
 /*                                                  ____
        ___                                      .-~. /_"-._
