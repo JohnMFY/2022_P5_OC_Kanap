@@ -81,15 +81,26 @@
                         let newQuantity =
                         parseInt(productOptionSelected.ProductQuantity) + parseInt(optionInArray.ProductQuantity);
                         optionInArray.ProductQuantity = newQuantity ;
-                        localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));
+                        localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));// penser a en faire une fonction
                   } else {
-                      AddProductLocalStorage()
+                     AddProductLocalStorage()
                   }
 
             } else {
-               dataInLocalStorage =[];
-               AddProductLocalStorage()
-            }      
+
+               const colorValue = document.getElementById('colors').value
+               const quantityValue = document.getElementById('quantity').value
+
+               if(quantityValue === 0 || colorValue == ""){
+                  alert("choose color and quantity");
+
+               }else{ 
+                  dataInLocalStorage =[];
+                  AddProductLocalStorage()
+               }
+        
+            } 
+            //mettre une alerte en cas d'error
       })
       
 /////////* AH AH AH, YOU DIDN'T SAY THE MAGIC WORD */////////
