@@ -86,19 +86,16 @@
                      AddProductLocalStorage()
                   }
 
-            } else {
-
-               const colorValue = document.getElementById('colors').value
-               const quantityValue = document.getElementById('quantity').value
-
-               if(quantityValue === 0 || colorValue == ""){
+            } 
+            const colorValue = document.getElementById('colors').value
+            const quantityValue = document.getElementById('quantity').value
+            if(quantityValue == 0 || colorValue == ""){
                   alert("choose color and quantity");
+                  
 
-               }else{ 
-                  dataInLocalStorage =[];
-                  AddProductLocalStorage()
-               }
-        
+            }else {
+               dataInLocalStorage =[];
+                AddProductLocalStorage()
             } 
             //mettre une alerte en cas d'error
       })
