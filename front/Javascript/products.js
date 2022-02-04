@@ -61,7 +61,10 @@
                ProductQuantity : quantitySelected,
                ProductColor : colorSelected,
             }
-         
+
+            const colorValue = document.getElementById('colors').value
+            const quantityValue = document.getElementById('quantity').value
+
          // GET THE DATA WHO ARE IN THE LOCAL STORAGE //
             let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
             //console.log(dataInLocalStorage)
@@ -73,31 +76,29 @@
             }   
 
          // SEND PRODUCT OPTION DATA TO LOCAL STORAGE IF THE DATA ARE NOT ALREADY ON IT AND ADJUST QUANTITY IF SAME [PRODUCT & COLOR] ADD //  
-            if (dataInLocalStorage){
+            
+            if(quantityValue == 0 || colorValue == ""){
+
+               alert("Sélectionner une couleur et une quantité");
+
+            } 
+            if ((dataInLocalStorage) && !(quantityValue == 0 || colorValue == "")){
 
                const optionInArray = dataInLocalStorage.find
-               ((element) => element.ProductId === idProduct && element.ProductColor === colorSelected); 
-                  if (optionInArray) {
-                        let newQuantity =
-                        parseInt(productOptionSelected.ProductQuantity) + parseInt(optionInArray.ProductQuantity);
-                        optionInArray.ProductQuantity = newQuantity ;
-                        localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));// penser a en faire une fonction
-                  } else {
-                     AddProductLocalStorage()
-                  }
+               ((element) => element.ProductId === idProduct && element.ProductColor === colorSelected);
 
-            } 
-            const colorValue = document.getElementById('colors').value
-            const quantityValue = document.getElementById('quantity').value
-            if(quantityValue == 0 || colorValue == ""){
-                  alert("choose color and quantity");
-                  
-
-            }else {
-               dataInLocalStorage =[];
-                AddProductLocalStorage()
-            } 
-            //mettre une alerte en cas d'error
+               if (optionInArray) {
+                     let newQuantity =
+                     parseInt(productOptionSelected.ProductQuantity) + parseInt(optionInArray.ProductQuantity);
+                     optionInArray.ProductQuantity = newQuantity ;
+                     localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));// penser a en faire une fonction
+               } else {
+                  AddProductLocalStorage()
+               }
+            }else if (!(quantityValue == 0 || colorValue == "")){
+                  dataInLocalStorage =[];
+                  AddProductLocalStorage()
+            }   
       })
       
 /////////* AH AH AH, YOU DIDN'T SAY THE MAGIC WORD */////////
