@@ -1,6 +1,6 @@
 /**//** DATA INSERT DYNAMICALLY IN THE DOM **//**/
 
-   ////// RECOVERY OF THE ID PRODUCT IN THE URL //////
+   ////// RECOVERY OF THE ID PRODUCT IN THE URL WITH PARAMS //////
       const productUrlId = window.location.search
       const UrlParams = new URLSearchParams(productUrlId)
       const idProduct= UrlParams.get("id")
@@ -75,12 +75,13 @@
                localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
             }   
 
+         // FUNCTION WHO ADD A QUANTITY TO PRODUCT IN THE LOCAL STORAGE //
+            // penser a en faire une fonction /1\
+
          // SEND PRODUCT OPTION DATA TO LOCAL STORAGE IF THE DATA ARE NOT ALREADY ON IT AND ADJUST QUANTITY IF SAME [PRODUCT & COLOR] ADD //  
             
             if(quantityValue == 0 || colorValue == ""){
-
                alert("Sélectionner une couleur et une quantité");
-
             } 
             if ((dataInLocalStorage) && !(quantityValue == 0 || colorValue == "")){
 
@@ -91,10 +92,11 @@
                      let newQuantity =
                      parseInt(productOptionSelected.ProductQuantity) + parseInt(optionInArray.ProductQuantity);
                      optionInArray.ProductQuantity = newQuantity ;
-                     localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));// penser a en faire une fonction
+                     localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));// penser a en faire une fonction /1\
                } else {
                   AddProductLocalStorage()
                }
+               
             }else if (!(quantityValue == 0 || colorValue == "")){
                   dataInLocalStorage =[];
                   AddProductLocalStorage()

@@ -1,18 +1,17 @@
+let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
+    console.log(dataInLocalStorage.ProductId)
 
-async function callProducts(){
-    await fetch('http://localhost:3000/api/products') // penser fetch grace à l'id dans le LS
+let idInLocalStorage = dataInLocalStorage
+console.log(idInLocalStorage)
+/*
+async function callProductById(){
+    await fetch(`http://localhost:3000/api/products/${idInLocalStorage}`)
     .then(res => res.json())
-    .then((data) => (productData = data))
-    .catch((error) => console.log(error));
-    console.table(productData)
-  }
-  let productData = [];
-
-    let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
-    console.log(dataInLocalStorage)
+    .then((data) => (productData = data))  
+}
 
     async function productCartInsertion(){
-    await callProducts()
+    await callProductById()
     let productCartContainer = document.getElementById('cart__items');
         
     for (let i=0; i < dataInLocalStorage.length; i++){
