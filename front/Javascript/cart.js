@@ -78,15 +78,36 @@ _ only the 1st product get his data from api
 _ multiple x2 the product article
 
 
-////////////TO//DO///////////////
-//  delete element              //
-//                              //
-//  change quantity             //
-//                              //           
-//   modify price with quantity //
+////////////TO//DO/////////////
+
+ delete element eventlistener [ON CLICK]{
+     
+    // enlever element du dom
+    element.parentElement.remove(); 
+
+    // enlever element du local storage
+    1. let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
+    2. Splice the product that i don't want
+    3. localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
+
+}             
+                             
+ change quantity eventlistener [ON VALUE CHANGE]{
+
+      let newQuantity =
+        parseInt(productOptionSelected.ProductQuantity) + parseInt(optionInArray.ProductQuantity);
+        optionInArray.ProductQuantity = newQuantity ;
+        localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));
+ }             
+                                      
+ modify price with quantity {
+     
+     productData.price * ProductQuantity = Sum
+ }
+
 ////////////////////////////////
 
-Vincent tips :
+//// Vincent tips ////
 
 const render = (product) => {
    // return ton html <article> en appliquant les valeurs de l'objet product, par ex product.url, product.name etc
