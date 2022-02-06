@@ -59,25 +59,34 @@ console.log(productData)
 async function dataFromApi(){
     await callProductById();
     await productCartInsertion();
-    
+
    //IMG & ALT//
     document.querySelector('.cart__item__img').innerHTML = `
        <img src="${productData.imageUrl}" alt="${productData.altTxt}">
     `
-    //TITLE////PRICE//
+    //TITLE & PRICE//
     document.querySelector('.cart__item__content__description').innerHTML=`
        <h2>${productData.name}</h2>
        <p>${productData.price} €</p>
     `
 }
 dataFromApi()
-/*
+/* 
+pb to fix : 
+_ Data from api innerhtml crush the color chosen
+_ only the 1st product get his data from api
+_ multiple x2 the product article
 
-//delete element
 
-//change quantity
+////////////TO//DO///////////////
+//  delete element              //
+//                              //
+//  change quantity             //
+//                              //           
+//   modify price with quantity //
+////////////////////////////////
 
-// modify price with quantity
+Vincent tips :
 
 const render = (product) => {
    // return ton html <article> en appliquant les valeurs de l'objet product, par ex product.url, product.name etc
