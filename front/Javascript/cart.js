@@ -1,11 +1,24 @@
 let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
 console.log(dataInLocalStorage)
 
+for(let productDataLocalStorage of dataInLocalStorage){
+
+    let ProductId = productDataLocalStorage.ProductId
+    fetch(`http://localhost:3000/api/products/${ProductId}`)
+    .then(res => res.json())
+    .then((data) => {
+        productData = data 
+        const article = render(productData, productDataLocalStorage);
+        
+        let boxArticleCart = document.getElementById('cart__items')
+        boxArticleCart.innerHTML += article
+            
+    })
+    .catch((error) => console.log(error));
+}
+
 const render = (dataAPI, dataLocalStorage) =>{
-    // faire ton fetch
-        console.log(dataAPI);
-        console.log(dataLocalStorage)
-     // retourner la structure html du produit
+
 	return `
     <article class="cart__item" data-id="${dataLocalStorage.ProductId}" data-color="${dataLocalStorage.ProductColor}">
 
@@ -40,20 +53,7 @@ const render = (dataAPI, dataLocalStorage) =>{
 `
 }
 
-for(let productDataLocalStorage of dataInLocalStorage){
-
-    let ProductId = productDataLocalStorage.ProductId
-    fetch(`http://localhost:3000/api/products/${ProductId}`)
-    .then(res => res.json())
-    .then((data) => {
-        productData = data 
-        const article = render(productData, productDataLocalStorage);
-        console.log(article)
-    })
-    .catch((error) => console.log(error));
-}
-
-/***********************************/ 
+        
 /*
 ////////////TO//DO/////////////
 
