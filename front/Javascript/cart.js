@@ -1,86 +1,135 @@
+//// RECUPERATION OF DATA IN LOCALSTORAGE ////
+
 let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
-console.log(dataInLocalStorage)
 
-for(let productDataLocalStorage of dataInLocalStorage){
+//// LOOP TO GET DATA FROM API AND INCRENTATION OF ARTICLE INNERHTML ////
+function looping(){
+    for(let productDataLocalStorage of dataInLocalStorage){
 
-    let ProductId = productDataLocalStorage.ProductId
-    fetch(`http://localhost:3000/api/products/${ProductId}`)
-    .then(res => res.json())
-    .then((data) => {
-        productData = data 
-        const article = render(productData, productDataLocalStorage);
-        
-        let boxArticleCart = document.getElementById('cart__items')
-        boxArticleCart.innerHTML += article
+        let ProductId = productDataLocalStorage.ProductId
+        fetch(`http://localhost:3000/api/products/${ProductId}`)
+        .then(res => res.json())
+        .then((data) => {
+            productData = data 
+
+            const article = render(productData, productDataLocalStorage);
             
-    })
-    .catch((error) => console.log(error));
+            let boxArticleCart = document.getElementById('cart__items')
+            boxArticleCart.innerHTML += article
+            
+        })
+        .catch((error) => console.log(error));
+            
+    }   
 }
+//// RENDER PRODUCT ARTICLE ////
 
-const render = (dataAPI, dataLocalStorage) =>{
+    const render = (dataAPI, dataLocalStorage) =>{
 
-	return `
-    <article class="cart__item" data-id="${dataLocalStorage.ProductId}" data-color="${dataLocalStorage.ProductColor}">
+        return `
+        <article class="cart__item" data-id="${dataLocalStorage.ProductId}" data-color="${dataLocalStorage.ProductColor}">
 
-    <div class="cart__item__img">
-        <img src="${dataAPI.imageUrl}" alt="${dataAPI.altTxt}">
-    </div>
-
-    <div class="cart__item__content">
-
-        <div class="cart__item__content__description">
-            <h2>${dataAPI.name}</h2>
-            <p>ProductColor : ${dataLocalStorage.ProductColor} </p>
-            <p>${dataAPI.price} €</p>
+        <div class="cart__item__img">
+            <img src="${dataAPI.imageUrl}" alt="${dataAPI.altTxt}">
         </div>
 
-        <div class="cart__item__content__settings">
+        <div class="cart__item__content">
 
-            <div class="cart__item__content__settings__quantity">
-                <p>Qté : ${dataLocalStorage.ProductQuantity} </p>
-                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${dataLocalStorage.ProductQuantity}">
+            <div class="cart__item__content__description">
+                <h2>${dataAPI.name}</h2>
+                <p>ProductColor : ${dataLocalStorage.ProductColor} </p>
+                <p>${dataAPI.price} €</p>
             </div>
 
-            <div class="cart__item__content__settings__delete">
-                <p class="deleteItem">Supprimer</p>
+            <div class="cart__item__content__settings">
+
+                <div class="cart__item__content__settings__quantity">
+                    <p>Qté : ${dataLocalStorage.ProductQuantity} </p>
+                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${dataLocalStorage.ProductQuantity}">
+                </div>
+
+                <div class="cart__item__content__settings__delete">
+                    <p class="deleteItem">Supprimer</p>
+                </div>
+
             </div>
 
         </div>
 
-    </div>
+    </article>
+    `
+    }
 
-</article>
-`
-}
+//// DELETE PRODUCT OF CART //// gerer await async
+  async function suppression() {
 
+        await looping()
+
+        let deleteBtn = document.querySelectorAll('.deleteItem')
+        console.log(deleteBtn)
+        for(let i = 0; i < deleteBtn.length; i++){
+            let buttonDel = deleteBtn[i]
+            buttonDel.addEventListener('click', function(e){
+                console.log('clickatation')
+                let buttonDelClick = e.target
+                buttonDelClick.parentElement.parentElement.parentElement.remove() //check closest in mdn
+                dataInLocalStorage.slice(ProductId)
+            })
+        } 
         
-/*
-////////////TO//DO/////////////
+    }
 
- delete element eventlistener [ON CLICK]{
-     
-    // enlever element du dom
-    element.parentElement.remove(); 
+suppression()
 
-    // enlever element du local storage
-    1. let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
-    2. Splice the product that i don't want
-    3. localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
 
-}             
-                             
- change quantity eventlistener [ON VALUE CHANGE]{
+/*vincent tips :
+var el = document.getElementById('div-03');
+var r1 = el.closest("#div-02");
+*//*
+//// TOTAL PRICE & QUANTITY ////
 
-      let newQuantity =
-        parseInt(productOptionSelected.ProductQuantity) + parseInt(optionInArray.ProductQuantity);
-        optionInArray.ProductQuantity = newQuantity ;
-        localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));
- }             
-                                      
- modify price with quantity {
-     
-     productData.price * ProductQuantity = Sum
- }
+    // QUANTITY //
+        let allProductTotal = 0
+        dataInLocalStorage.forEach(productLocalStorage => {
+            allProductTotal += productLocalStorage.price
+        })
+        console.log(allProductTotal)
+        const totalQuantity = document.getElementById('totalQuantity')
+        totalQuantity.innerHTML = `
+        ${productTotalQuantity}
+        `
 
-////////////////////////////////
-*/
+    // PRICE //
+       let productTotalPrice = 0
+        productData.forEach(product => {
+            productTotalPrice += product.price * product.ProductQuantity
+        })
+        console.log(productTotalPrice)
+        const totalPrice = document.getElementsById('totalPrice')
+        totalPrice.innerHTML = `
+        ${productTotalPrice}
+        `
+   
+//// MODIFICATION OF QUANTITY ////
+
+        let quantitySelected = document.getElementsByClassName("itemQuantity");
+      
+
+        for (let i = 0; i < quantitySelected.length; i++){  
+            
+
+            quantitySelected[i].addEventListener("change" , (event) => {
+                
+                let quantityModif = dataInLocalStorage[i].ProductQuantity;
+                let quantitySelectedValue = quantitySelected[i].value;
+                
+                const resultFind = dataInLocalStorage.find((element) => element.quantitySelectedValue !== quantityModif);
+
+                resultFind.ProductQuantity= quantitySelectedValue;
+                dataInLocalStorage[i].ProductQuantity = resultFind.ProductQuantity;
+
+                localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));
+
+                location.reload();
+            })
+        }*/
