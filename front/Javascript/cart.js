@@ -3,24 +3,32 @@
 let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
 
 //// LOOP TO GET DATA FROM API AND INCRENTATION OF ARTICLE INNERHTML ////
-function looping(){
+
+let boxArticleCart = document.getElementById('cart__items');
+let articlesPromise = [];
+
+async function looping(){
+    // simule la boucle du localStorage
     for(let productDataLocalStorage of dataInLocalStorage){
 
         let ProductId = productDataLocalStorage.ProductId
-        fetch(`http://localhost:3000/api/products/${ProductId}`)
-        .then(res => res.json())
-        .then((data) => {
-            productData = data 
+        articlesPromise.push(fetch(`http://localhost:3000/api/products/${ProductId}`)
 
+        .then(res => res.json())
+
+        .then((data) => {
+
+            productData = data;
             const article = render(productData, productDataLocalStorage);
-            
-            let boxArticleCart = document.getElementById('cart__items')
-            boxArticleCart.innerHTML += article
-            
+            return article;
+
         })
-        .catch((error) => console.log(error));
-            
-    }   
+
+        .catch((error) => console.log(error)))
+
+    }
+  
+  return articlesPromise;
 }
 //// RENDER PRODUCT ARTICLE ////
 
@@ -60,26 +68,39 @@ function looping(){
     `
     }
 
-//// DELETE PRODUCT OF CART //// gerer await async
-  async function suppression() {
+//// DELETE PRODUCT OF CART ////
+async function suppression() {
+    await looping().then(articlesPromesse => {
+      Promise.all(articlesPromesse)
+        .then(articles => {
 
-        await looping()
+            articles = articles.join('');
+            boxArticleCart.innerHTML = articles;
+            let deleteBtn = Array.from(document.getElementsByClassName('deleteItem'))
+            
+          for(let i = 0; i < deleteBtn.length; i++){
 
-        let deleteBtn = document.querySelectorAll('.deleteItem')
-        console.log(deleteBtn)
-        for(let i = 0; i < deleteBtn.length; i++){
             let buttonDel = deleteBtn[i]
-            buttonDel.addEventListener('click', function(e){
-                console.log('clickatation')
-                let buttonDelClick = e.target
-                buttonDelClick.parentElement.parentElement.parentElement.remove() //check closest in mdn
-                dataInLocalStorage.slice(ProductId)
-            })
-        } 
-        
-    }
 
-suppression()
+            buttonDel.addEventListener('click', function(e){
+
+                console.log('click is working')
+                let buttonDelClick = e.target
+                buttonDelClick.closest('.cart__item').remove() //check closest in mdn
+                for (product of dataInLocalStorage)
+                console.log(product)
+                localStorage.removeItem(dataInLocalStorage)
+              
+
+            })
+                   
+          } 
+      });
+    });        
+  }
+      
+suppression();
+  
 
 
 /*vincent tips :
