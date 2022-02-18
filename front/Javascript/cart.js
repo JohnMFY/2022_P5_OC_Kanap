@@ -107,15 +107,10 @@ async function suppression() {
         });
     });        
   }
-       
+
 suppression();
   
-
-
-/*vincent tips :
-var el = document.getElementById('div-03');
-var r1 = el.closest("#div-02");
-*//*
+/*
 //// TOTAL PRICE & QUANTITY ////
 
     // QUANTITY //
