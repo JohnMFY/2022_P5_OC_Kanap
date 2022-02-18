@@ -5,10 +5,10 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
 //// LOOP TO GET DATA FROM API AND INCRENTATION OF ARTICLE INNERHTML ////
 
 let boxArticleCart = document.getElementById('cart__items');
-let articlesPromise = [];
+let articlesPromise = []; // promises storage
 
 async function looping(){
-    // simule la boucle du localStorage
+     
     for(let productDataLocalStorage of dataInLocalStorage){
 
         let ProductId = productDataLocalStorage.ProductId
@@ -69,36 +69,45 @@ async function looping(){
     }
 
 //// DELETE PRODUCT OF CART ////
+
 async function suppression() {
     await looping().then(articlesPromesse => {
-      Promise.all(articlesPromesse)
+      Promise.all(articlesPromesse) // Recuperation of all promise
+
         .then(articles => {
 
-            articles = articles.join('');
             boxArticleCart.innerHTML = articles;
-            let deleteBtn = Array.from(document.getElementsByClassName('deleteItem'))
+
+            let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
             
-          for(let i = 0; i < deleteBtn.length; i++){
+            for(let i = 0; i < deleteBtn.length; i++){
 
-            let buttonDel = deleteBtn[i]
+                let buttonDel = deleteBtn[i]
 
-            buttonDel.addEventListener('click', function(e){
+                buttonDel.addEventListener('click', function(e){
 
-                console.log('click is working')
-                let buttonDelClick = e.target
-                buttonDelClick.closest('.cart__item').remove() //check closest in mdn
-                for (product of dataInLocalStorage)
-                console.log(product)
-                localStorage.removeItem(dataInLocalStorage)
-              
+                    console.log('click is working')
 
-            })
+                    // Remove article of the DOM //
+                    let buttonDelClick = e.target
+                    buttonDelClick.closest('.cart__item').remove()
+
+                    // Remove item from LocalStorage //
                    
-          } 
-      });
+                    let deleteId = dataInLocalStorage[i].ProductId;
+                    let deleteColor = dataInLocalStorage[i].ProductColor; // recuperation of data id & color associate to the article of the buttonDel clicked
+                    
+                    dataInLocalStorage = dataInLocalStorage.filter( e => e.ProductId !== deleteId || e.ProductColor !== deleteColor ); // exclusion of data from upper variable and creation of new array         
+                    localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage)); // replacement of array in LocalStorage
+
+                    location.reload(); // we can use location.reload() to avoid "bug" (Cannot read properties of undefined (reading 'ProductId')) who can appear time to time with big cart
+                    
+                })       
+            } 
+        });
     });        
   }
-      
+       
 suppression();
   
 
