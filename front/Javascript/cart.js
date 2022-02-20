@@ -68,18 +68,21 @@ async function looping(){
     `
     }
 
-//// DELETE PRODUCT OF CART ////
 
-async function suppression() {
+
+async function afterPromise() {
     await looping().then(articlesPromesse => {
-      Promise.all(articlesPromesse) // Recuperation of all promise
+
+        Promise.all(articlesPromesse) // Recuperation of all promise
 
         .then(articles => {
-
+                
             boxArticleCart.innerHTML = articles;
+            
+            //// DELETE PRODUCT OF CART ////
 
             let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
-            
+
             for(let i = 0; i < deleteBtn.length; i++){
 
                 let buttonDel = deleteBtn[i]
@@ -94,36 +97,44 @@ async function suppression() {
 
                     // Remove item from LocalStorage //
                    
-                    let deleteId = dataInLocalStorage[i].ProductId;
-                    let deleteColor = dataInLocalStorage[i].ProductColor; // recuperation of data id & color associate to the article of the buttonDel clicked
+                    let deletedId = dataInLocalStorage[i].ProductId;
+                    let deletedColor = dataInLocalStorage[i].ProductColor; // recuperation of data id & color associate to the article of the buttonDel clicked
                     
-                    dataInLocalStorage = dataInLocalStorage.filter( e => e.ProductId !== deleteId || e.ProductColor !== deleteColor ); // exclusion of data from upper variable and creation of new array         
+                    dataInLocalStorage = dataInLocalStorage.filter( e => e.ProductId !== deletedId || e.ProductColor !== deletedColor ); // exclusion of data from upper variable and creation of new array         
                     localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage)); // replacement of array in LocalStorage
 
                     location.reload(); // we can use location.reload() to avoid "bug" (Cannot read properties of undefined (reading 'ProductId')) who can appear time to time with big cart
                     
                 })       
             } 
+
+            //// TOTAL PRICE & QUANTITY ////
+            
+                // QUANTITY IN THE DOM //
+
+                    let productsTotalQuantity = 0
+                    let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
+                    
+                    for (let j = 0; j < productsQuantityInput.length; j++){
+                        productsTotalQuantity += productsQuantityInput[j].valueAsNumber //valueAsNumber if only value = JS dark magic string + string 1+2 = 12
+                    }
+
+                    let totalQuantity = document.getElementById('totalQuantity')
+                    totalQuantity.innerHTML = productsTotalQuantity
+                    
+                //
+
         });
     });        
-  }
+}
 
-suppression();
+afterPromise();
   
+
+
+
+    
 /*
-//// TOTAL PRICE & QUANTITY ////
-
-    // QUANTITY //
-        let allProductTotal = 0
-        dataInLocalStorage.forEach(productLocalStorage => {
-            allProductTotal += productLocalStorage.price
-        })
-        console.log(allProductTotal)
-        const totalQuantity = document.getElementById('totalQuantity')
-        totalQuantity.innerHTML = `
-        ${productTotalQuantity}
-        `
-
     // PRICE //
        let productTotalPrice = 0
         productData.forEach(product => {
@@ -157,4 +168,5 @@ suppression();
 
                 location.reload();
             })
-        }*/
+        }
+*/
