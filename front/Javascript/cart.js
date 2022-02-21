@@ -89,8 +89,6 @@ async function afterPromise() {
 
                     buttonDel.addEventListener('click', function(e){
 
-                        console.log('click is working')
-
                         // Remove article of the DOM //
                         let buttonDelClick = e.target
                         buttonDelClick.closest('.cart__item').remove()
@@ -131,8 +129,6 @@ async function afterPromise() {
 
                     for (let j = 0; j < productsQuantityInput.length; j++){
                         productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productData.price)
-                        
-                        console.log(productsTotalPrice)
                     }
                     console.log(productsTotalPrice)
                     let totalPrice = document.getElementById('totalPrice')
@@ -169,6 +165,28 @@ async function afterPromise() {
 afterPromise();
 
 //// RECUPERATION OF FORM DATA ////
+
+const btnOrder = document.querySelector('#order')
+btnOrder.addEventListener('click', () =>{
+    console.log('click order is working')
+
+    // collecting value from form //
+    
+    const userData = {
+        firstName: document.querySelector('#firstName').value,
+        lastName: document.querySelector('#lastName').value,
+        address: document.querySelector('#address').value,
+        city: document.querySelector('#city').value,
+        email: document.querySelector('#email').value,
+    }
+    
+    localStorage.setItem('userData', JSON.stringify(userData))
+
+    console.table(userData)
+
+
+})
+
 
 
 /*
