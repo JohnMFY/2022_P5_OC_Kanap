@@ -1,34 +1,34 @@
 //// RECUPERATION OF DATA IN LOCALSTORAGE ////
 
-let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
+    let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
 
 //// LOOP TO GET DATA FROM API AND INCRENTATION OF ARTICLE INNERHTML ////
 
-let boxArticleCart = document.getElementById('cart__items');
-let articlesPromise = []; // promises storage
+    let boxArticleCart = document.getElementById('cart__items');
+    let articlesPromise = []; // promises storage
 
-async function looping(){
-     
-    for(let productDataLocalStorage of dataInLocalStorage){
+    async function looping(){
+        
+        for(let productDataLocalStorage of dataInLocalStorage){
 
-        let ProductId = productDataLocalStorage.ProductId
-        articlesPromise.push(fetch(`http://localhost:3000/api/products/${ProductId}`)
+            let ProductId = productDataLocalStorage.ProductId
+            articlesPromise.push(fetch(`http://localhost:3000/api/products/${ProductId}`)
 
-        .then(res => res.json())
+            .then(res => res.json())
 
-        .then((data) => {
+            .then((data) => {
 
-            productData = data;
-            const article = render(productData, productDataLocalStorage);
-            return article;
-            
-        })
+                productData = data;
+                const article = render(productData, productDataLocalStorage);
+                return article;
+                
+            })
 
-        .catch((error) => console.log(error)))
-    }
+            .catch((error) => console.log(error)))
+        }
 
-  return articlesPromise;
-}  
+    return articlesPromise;
+    }  
 
 //// RENDER PRODUCT ARTICLE ////
 
@@ -70,122 +70,200 @@ async function looping(){
 
 
 //// SUPPRESSION MODIFICATION AND CALCUL OF TOTAL PRICE ////
-async function afterPromise() {
-    await looping().then(articlesPromesse => {
-    
-        Promise.all(articlesPromesse) // Recuperation of all promise
 
-        .then(articles => {
+    async function afterPromise() {
+        await looping().then(articlesPromesse => {
+        
+            Promise.all(articlesPromesse) // Recuperation of all promise
 
-            boxArticleCart.innerHTML = articles;
-            
-            //// DELETE PRODUCT OF CART ////
+            .then(articles => {
 
-                let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
+                boxArticleCart.innerHTML = articles;
+                
+                //// DELETE PRODUCT OF CART ////
 
-                for(let i = 0; i < deleteBtn.length; i++){
+                    let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
 
-                    let buttonDel = deleteBtn[i]
+                    for(let i = 0; i < deleteBtn.length; i++){
 
-                    buttonDel.addEventListener('click', function(e){
+                        let buttonDel = deleteBtn[i]
 
-                        // Remove article of the DOM //
-                        let buttonDelClick = e.target
-                        buttonDelClick.closest('.cart__item').remove()
+                        buttonDel.addEventListener('click', function(e){
 
-                        // Remove item from LocalStorage //
-                    
-                        let deletedId = dataInLocalStorage[i].ProductId;
-                        let deletedColor = dataInLocalStorage[i].ProductColor; // recuperation of data id & color associate to the article of the buttonDel clicked
+                            // Remove article of the DOM //
+                            let buttonDelClick = e.target
+                            buttonDelClick.closest('.cart__item').remove()
+
+                            // Remove item from LocalStorage //
                         
-                        dataInLocalStorage = dataInLocalStorage.filter( e => e.ProductId !== deletedId || e.ProductColor !== deletedColor ); // exclusion of data from upper variable and creation of new array         
-                        localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage)); // replacement of array in LocalStorage
+                            let deletedId = dataInLocalStorage[i].ProductId;
+                            let deletedColor = dataInLocalStorage[i].ProductColor; // recuperation of data id & color associate to the article of the buttonDel clicked
+                            
+                            dataInLocalStorage = dataInLocalStorage.filter( e => e.ProductId !== deletedId || e.ProductColor !== deletedColor ); // exclusion of data from upper variable and creation of new array         
+                            localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage)); // replacement of array in LocalStorage
 
-                        location.reload(); // we can use location.reload() to avoid "bug" (Cannot read properties of undefined (reading 'ProductId')) who can appear time to time with a big cart
+                            location.reload(); // we can use location.reload() to avoid "bug" (Cannot read properties of undefined (reading 'ProductId')) who can appear time to time with a big cart
+                            
+                        })       
+                    } 
+
+                //// TOTAL PRICE & QUANTITY ////
+                
+                    // QUANTITY INTEGRATE IN THE DOM //
+
+                        let productsTotalQuantity = 0
+                        let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
                         
-                    })       
-                } 
+                        for (let j = 0; j < productsQuantityInput.length; j++){
+                            productsTotalQuantity += productsQuantityInput[j].valueAsNumber //valueAsNumber if only value = JS dark magic string + string 1+2 = 12
+                            
+                        }
 
-            //// TOTAL PRICE & QUANTITY ////
+                        let totalQuantity = document.getElementById('totalQuantity')
+                        totalQuantity.innerHTML = productsTotalQuantity
+                        
+                    // TOTAL PRICE INTEGRATE IN THE DOM //
+
+                        // /!\ BUG  N'utilise que le dernier price integré dans le DOM /!\
+
+                    let productsTotalPrice = 0
+
+                        for (let j = 0; j < productsQuantityInput.length; j++){
+                            productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productData.price)
+                        }
+                        console.log(productsTotalPrice)
+                        let totalPrice = document.getElementById('totalPrice')
+                        totalPrice.innerHTML = productsTotalPrice
+
+                //// MODIFICATION OF QUANTITY ////
+
+                    // /!\ BUG  the quantity of the 1st product change on every change of other product (with the same value of the change done) /!\
+
+                    for (let k = 0; k < productsQuantityInput.length; k++){  
+                        
             
-                // QUANTITY INTEGRATE IN THE DOM //
-
-                    let productsTotalQuantity = 0
-                    let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
-                    
-                    for (let j = 0; j < productsQuantityInput.length; j++){
-                        productsTotalQuantity += productsQuantityInput[j].valueAsNumber //valueAsNumber if only value = JS dark magic string + string 1+2 = 12
+                        productsQuantityInput[k].addEventListener("change" , (e) => {
+                            
+                            let quantityModif = dataInLocalStorage[k].ProductQuantity
+                        
+                            let productsQuantityInputValue = productsQuantityInput[k].value
+                            
+                            const newQantity = dataInLocalStorage.find((product) => product.productsQuantityInputValue !== quantityModif)
+            
+                            newQantity.ProductQuantity = productsQuantityInputValue
+                            dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
+            
+                            localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
+            
+                            location.reload();
+                        })
                         
                     }
+            });
+        });        
+    }
 
-                    let totalQuantity = document.getElementById('totalQuantity')
-                    totalQuantity.innerHTML = productsTotalQuantity
-                    
-                // TOTAL PRICE INTEGRATE IN THE DOM //
-
-                    // /!\ BUG  N'utilise que le dernier price integré dans le DOM /!\
-
-                   let productsTotalPrice = 0
-
-                    for (let j = 0; j < productsQuantityInput.length; j++){
-                        productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productData.price)
-                    }
-                    console.log(productsTotalPrice)
-                    let totalPrice = document.getElementById('totalPrice')
-                    totalPrice.innerHTML = productsTotalPrice
-
-            //// MODIFICATION OF QUANTITY ////
-
-                // /!\ BUG  the quantity of the 1st product change on every change of other product (with the same value of the change done) /!\
-
-                for (let k = 0; k < productsQuantityInput.length; k++){  
-                    
-        
-                    productsQuantityInput[k].addEventListener("change" , (e) => {
-                        
-                        let quantityModif = dataInLocalStorage[k].ProductQuantity
-                       
-                        let productsQuantityInputValue = productsQuantityInput[k].value
-                        
-                        const newQantity = dataInLocalStorage.find((product) => product.productsQuantityInputValue !== quantityModif)
-        
-                        newQantity.ProductQuantity = productsQuantityInputValue
-                        dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
-        
-                        localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
-        
-                        location.reload();
-                    })
-                    
-                }
-        });
-    });        
-}
-
-afterPromise();
+    afterPromise();
 
 //// RECUPERATION OF FORM DATA ////
 
-const btnOrder = document.querySelector('#order')
-btnOrder.addEventListener('click', () =>{
-    console.log('click order is working')
+    const btnOrder = document.querySelector('#order')
+    btnOrder.addEventListener('click', () =>{
+        console.log('click order is working')
 
-    // collecting value from form //
-    
-    const userData = {
-        firstName: document.querySelector('#firstName').value,
-        lastName: document.querySelector('#lastName').value,
-        address: document.querySelector('#address').value,
-        city: document.querySelector('#city').value,
-        email: document.querySelector('#email').value,
-    }
-    
-    localStorage.setItem('userData', JSON.stringify(userData))
+        // VERIFICATION OF DATA FROM FORM //
 
-    console.table(userData)
+        // function with a regex for FName LName and City
+            const regexTestLetter3_20NothingElse = (test) =>{  //control if there is between 3 to 20 letters, capital autorized and refuse all other characters 
+            return  /^[A-Z a-z]{3,20}$/.test(test)
+            }
+        // First name 
+            function firstNameTest(){
 
+                const  firstName = document.querySelector('#firstName').value
 
-})
+                if(regexTestLetter3_20NothingElse(firstName)){
+                    return true
+                } else{
+                    alert ('Chiffre et symboles ne sont pas autorisé.\nVotre prénom doit être de 3 à 20 caractères.')
+                    return false
+                }
+            }
+        // Last name
+            function lastNameTest(){
+
+                const  lastName = document.querySelector('#lastName').value
+
+                if(regexTestLetter3_20NothingElse(lastName)){
+                    return true
+                } else{
+                    alert ('Chiffre et symboles ne sont pas autorisé.\nVotre nom doit être de 3 à 20 caractères.')
+                    return false
+                }
+            }           
+        // City
+            function cityTest(){
+
+                const  city = document.querySelector('#city').value
+
+                if(regexTestLetter3_20NothingElse(city)){
+                    return true
+                } else{
+                    alert ('Chiffre et symboles ne sont pas autorisé.\nVotre ville doit comporter 3 à 20 caractères.')
+                    return false
+                }
+            }
+        // Email
+            const regexTestEmail = (test) =>{
+                return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(test)
+            }
+
+            function emailTest(){
+
+                const  email = document.querySelector('#email').value
+
+                if(regexTestEmail(email)){
+                    return true
+                } else{
+                    alert ("L'email n'est pas valide")
+                    return false
+                }
+            }
+        // Address
+            const regexTestAdress = (test) => {
+                return /^[A-Z a-z 0-9\s]{5,50}$/.test(test)
+            }
+            function addressTest(){
+
+                const  address = document.querySelector('#address').value
+
+                if(regexTestAdress (address)){
+                    return true
+                } else{
+                    alert ("L'adresse n'est pas valide")
+                    return false
+                }
+            }
+
+        // collecting value from form //
+
+            const userData = {
+                firstName: document.querySelector('#firstName').value,
+                lastName: document.querySelector('#lastName').value,
+                address: document.querySelector('#address').value,
+                city: document.querySelector('#city').value,
+                email: document.querySelector('#email').value,
+            }
+
+        // After tests Send data in LS 
+
+            if(firstNameTest() && lastNameTest() && cityTest() && emailTest() && addressTest()){
+                localStorage.setItem('userData', JSON.stringify(userData))
+                console.table(userData)
+            }else{
+                console.log('ERROR form')
+            }
+    })
 
 
 
@@ -194,12 +272,6 @@ btnOrder.addEventListener('click', () =>{
   **************
  * HTML DU FORM *
   **************
-
-div class="cart__price">
-
-    <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice"><!-- 84,00 --></span> €</p>
-
-</div>
 
 <div class="cart__order">
 
