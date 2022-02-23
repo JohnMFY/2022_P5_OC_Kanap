@@ -6,6 +6,7 @@
 
     let boxArticleCart = document.getElementById('cart__items');
     let articlesPromise = []; // promises storage
+    let prices = []
 
     async function looping(){
         
@@ -20,6 +21,11 @@
 
                 productData = data;
                 const article = render(productData, productDataLocalStorage);
+
+                let price = {}
+                price[productData._id] = productData.price
+                prices.push(price)
+
                 return article;
                 
             })
@@ -27,12 +33,12 @@
             .catch((error) => console.log(error)))
         }
 
-    return articlesPromise;
+        return articlesPromise;
     }  
 
 //// RENDER PRODUCT ARTICLE ////
 
-    const render = (dataAPI, dataLocalStorage) =>{
+    const render = (dataAPI, dataLocalStorage) =>{ // Return with data from API and LS the HTLM of the product in the cart
 
         return `
         <article class="cart__item" data-id="${dataLocalStorage.ProductId}" data-color="${dataLocalStorage.ProductColor}">
@@ -71,7 +77,7 @@
 
 //// SUPPRESSION MODIFICATION AND CALCUL OF TOTAL PRICE ////
 
-    async function afterPromise() {
+    async function afterPromise() { // Function who recover the promises needed to operate the option of modification of quantity, suppression of product and calacul of total quantity and total price
         await looping().then(articlesPromesse => {
         
             Promise.all(articlesPromesse) // Recuperation of all promise
@@ -81,32 +87,37 @@
                 boxArticleCart.innerHTML = articles;
                 
                 //// DELETE PRODUCT OF CART ////
-
+                 const deleteProductFromCart = () =>{
                     let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
 
                     for(let i = 0; i < deleteBtn.length; i++){
 
                         let buttonDel = deleteBtn[i]
 
+                            let productInCart = document.querySelectorAll('.cart__item') // recuperation of data id & color associate to the article of the buttonDel clicked
+                            let productInCartId = productInCart[i].dataset.id
+                            let productInCartColor = productInCart[i].dataset.color
+
                         buttonDel.addEventListener('click', function(e){
+
+                            // Remove item from LocalStorage //
+                            
+                            dataInLocalStorage = dataInLocalStorage.filter( e => (e.ProductId !== productInCartId || e.ProductColor !== productInCartColor))
+                            console.log(dataInLocalStorage)
+
+                            localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage)); 
+                            console.log(dataInLocalStorage)
 
                             // Remove article of the DOM //
                             let buttonDelClick = e.target
                             buttonDelClick.closest('.cart__item').remove()
 
-                            // Remove item from LocalStorage //
-                        
-                            let deletedId = dataInLocalStorage[i].ProductId;
-                            let deletedColor = dataInLocalStorage[i].ProductColor; // recuperation of data id & color associate to the article of the buttonDel clicked
-                            
-                            dataInLocalStorage = dataInLocalStorage.filter( e => e.ProductId !== deletedId || e.ProductColor !== deletedColor ); // exclusion of data from upper variable and creation of new array         
-                            localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage)); // replacement of array in LocalStorage
+                            //location.reload(); // we can use  to avoid "bug" (Cannot read properties of undefined (reading 'ProductId')) who can appear time to time with a big cart
 
-                            location.reload(); // we can use location.reload() to avoid "bug" (Cannot read properties of undefined (reading 'ProductId')) who can appear time to time with a big cart
-                            
                         })       
                     } 
-
+                 }
+                 deleteProductFromCart()
                 //// TOTAL PRICE & QUANTITY ////
                 
                     // QUANTITY INTEGRATE IN THE DOM //
@@ -115,8 +126,7 @@
                         let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
                         
                         for (let j = 0; j < productsQuantityInput.length; j++){
-                            productsTotalQuantity += productsQuantityInput[j].valueAsNumber //valueAsNumber if only value = JS dark magic string + string 1+2 = 12
-                            
+                            productsTotalQuantity += productsQuantityInput[j].valueAsNumber                      
                         }
 
                         let totalQuantity = document.getElementById('totalQuantity')
@@ -127,9 +137,17 @@
                         // /!\ BUG  N'utilise que le dernier price integré dans le DOM /!\
 
                     let productsTotalPrice = 0
-
+                        for (let article of articles){
+                           
+                        }
+                        for (let price of prices){
+                            console.log(price)
+                            
+                        }
                         for (let j = 0; j < productsQuantityInput.length; j++){
-                            productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productData.price)
+                            
+                           productsTotalPrice += (productsQuantityInput[j].valueAsNumber * prices.price)
+                          
                         }
                         console.log(productsTotalPrice)
                         let totalPrice = document.getElementById('totalPrice')
@@ -155,7 +173,7 @@
             
                             localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
             
-                            location.reload();
+                            //location.reload(); // mettre a jour le LS pas de reload et le champ total
                         })
                         
                     }
@@ -175,7 +193,7 @@
 
         // function with a regex for FName LName and City
             const regexTestLetter3_20NothingElse = (test) =>{  //control if there is between 3 to 20 letters, capital autorized and refuse all other characters 
-            return  /^[A-Z a-z]{3,20}$/.test(test)
+            return  /^[A-Z a-z\s]{3,20}$/.test(test)
             }
         // First name 
             function firstNameTest(){
@@ -263,7 +281,21 @@
             }else{
                 console.log('ERROR form')
             }
+            
+        //// USE OF METHOD POST WITH FETCH TO SEND THE DATA ON SERVER //// post order postman est ton ami
+
+            const promise = fetch("http://localhost:3000/api/products/order", {
+                method: "POST",
+                body: JSON.stringify(userData),
+                headers:{
+                    "Content-type" : "application/json",
+                }
+            })
+        console.log(promise)
     })
+    
+
+
 
 
 
