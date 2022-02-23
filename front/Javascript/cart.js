@@ -87,37 +87,38 @@
                 boxArticleCart.innerHTML = articles;
                 
                 //// DELETE PRODUCT OF CART ////
-                 const deleteProductFromCart = () =>{
-                    let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
+                
+                    const deleteProductFromCart = () =>{
 
-                    for(let i = 0; i < deleteBtn.length; i++){
+                        let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
 
-                        let buttonDel = deleteBtn[i]
+                        for(let i = 0; i < deleteBtn.length; i++){
 
-                            let productInCart = document.querySelectorAll('.cart__item') // recuperation of data id & color associate to the article of the buttonDel clicked
-                            let productInCartId = productInCart[i].dataset.id
-                            let productInCartColor = productInCart[i].dataset.color
+                            let buttonDel = deleteBtn[i]
 
-                        buttonDel.addEventListener('click', function(e){
+                                let productInCart = document.querySelectorAll('.cart__item') // recuperation of data id & color associate to the article of the buttonDel clicked
+                                let productInCartId = productInCart[i].dataset.id
+                                let productInCartColor = productInCart[i].dataset.color
 
-                            // Remove item from LocalStorage //
-                            
-                            dataInLocalStorage = dataInLocalStorage.filter( e => (e.ProductId !== productInCartId || e.ProductColor !== productInCartColor))
-                            console.log(dataInLocalStorage)
+                            buttonDel.addEventListener('click', function(e){
 
-                            localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage)); 
-                            console.log(dataInLocalStorage)
+                                // Remove item from LocalStorage //
 
-                            // Remove article of the DOM //
-                            let buttonDelClick = e.target
-                            buttonDelClick.closest('.cart__item').remove()
+                                dataInLocalStorage = dataInLocalStorage.filter( e => (e.ProductId !== productInCartId || e.ProductColor !== productInCartColor))
+                                console.log(dataInLocalStorage)
 
-                            //location.reload(); // we can use  to avoid "bug" (Cannot read properties of undefined (reading 'ProductId')) who can appear time to time with a big cart
+                                localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage)); 
+                                console.log(dataInLocalStorage)
 
-                        })       
-                    } 
-                 }
-                 deleteProductFromCart()
+                                // Remove article of the DOM //
+                                let buttonDelClick = e.target
+                                buttonDelClick.closest('.cart__item').remove()
+
+                            })       
+                        } 
+                    }
+                    deleteProductFromCart()
+
                 //// TOTAL PRICE & QUANTITY ////
                 
                     // QUANTITY INTEGRATE IN THE DOM //
