@@ -87,7 +87,7 @@
                 boxArticleCart.innerHTML = articles;
                 
                 //// DELETE PRODUCT OF CART ////
-                
+
                     const deleteProductFromCart = () =>{
 
                         let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
@@ -95,10 +95,9 @@
                         for(let i = 0; i < deleteBtn.length; i++){
 
                             let buttonDel = deleteBtn[i]
-
-                                let productInCart = document.querySelectorAll('.cart__item') // recuperation of data id & color associate to the article of the buttonDel clicked
-                                let productInCartId = productInCart[i].dataset.id
-                                let productInCartColor = productInCart[i].dataset.color
+                            let productInCart = document.querySelectorAll('.cart__item')
+                            let productInCartId = productInCart[i].dataset.id
+                            let productInCartColor = productInCart[i].dataset.color
 
                             buttonDel.addEventListener('click', function(e){
 
@@ -117,6 +116,7 @@
                             })       
                         } 
                     }
+                    
                     deleteProductFromCart()
 
                 //// TOTAL PRICE & QUANTITY ////
