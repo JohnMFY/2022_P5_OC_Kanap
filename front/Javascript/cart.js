@@ -137,19 +137,20 @@
 
                         // /!\ BUG  N'utilise que le dernier price integré dans le DOM /!\
 
-                    let productsTotalPrice = 0
-                        for (let article of articles){
-                           
-                        }
+                        let productsTotalPrice = 0
+
                         for (let price of prices){
-                            console.log(price)
-                            
+                            let productPrice = Object.values(price)
+                            let productPriceString = productPrice.toString()
+                            console.log(productPriceString)
                         }
-                        for (let j = 0; j < productsQuantityInput.length; j++){
-                            
-                           productsTotalPrice += (productsQuantityInput[j].valueAsNumber * prices.price)
-                          
+
+                        for (let j = 0; j < productsQuantityInput.length; j++){   
+
+                           productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productPriceString)
+
                         }
+                        
                         console.log(productsTotalPrice)
                         let totalPrice = document.getElementById('totalPrice')
                         totalPrice.innerHTML = productsTotalPrice
