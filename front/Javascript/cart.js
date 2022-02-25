@@ -102,7 +102,6 @@
                             buttonDel.addEventListener('click', function(e){
 
                                 // Remove item from LocalStorage //
-
                                 dataInLocalStorage = dataInLocalStorage.filter( e => (e.ProductId !== productInCartId || e.ProductColor !== productInCartColor))
                                 console.log(dataInLocalStorage)
 
@@ -139,19 +138,20 @@
 
                         let productsTotalPrice = 0
 
+                        const productsPrice = [];
                         for (let price of prices){
                             let productPrice = Object.values(price)
                             let productPriceString = productPrice.toString()
-                            console.log(productPriceString)
-                        }
+                            productsPrice.push(productPriceString)
+                        } 
+                        console.log(productsPrice)
 
                         for (let j = 0; j < productsQuantityInput.length; j++){   
 
-                           productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productPriceString)
+                           productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productsPrice[j])
 
                         }
                         
-                        console.log(productsTotalPrice)
                         let totalPrice = document.getElementById('totalPrice')
                         totalPrice.innerHTML = productsTotalPrice
 
@@ -159,23 +159,25 @@
 
                     // /!\ BUG  the quantity of the 1st product change on every change of other product (with the same value of the change done) /!\
 
+                        
                     for (let k = 0; k < productsQuantityInput.length; k++){  
-                        
-            
+
+                            
+                                
                         productsQuantityInput[k].addEventListener("change" , (e) => {
-                            
-                            let quantityModif = dataInLocalStorage[k].ProductQuantity
-                        
+
                             let productsQuantityInputValue = productsQuantityInput[k].value
-                            
-                            const newQantity = dataInLocalStorage.find((product) => product.productsQuantityInputValue !== quantityModif)
-            
+                            console.log(productsQuantityInputValue)
+                            let quantityModif = dataInLocalStorage[k].ProductQuantity
+                            const newQantity = dataInLocalStorage.find((Product) => (Product.productsQuantityInputValue !== quantityModif))
+                            console.log(newQantity)
                             newQantity.ProductQuantity = productsQuantityInputValue
+                            console.log(newQantity)
                             dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
             
                             localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
             
-                            //location.reload(); // mettre a jour le LS pas de reload et le champ total
+                            location.reload(); // mettre a jour le LS pas de reload et le champ total
                         })
                         
                     }
@@ -183,13 +185,15 @@
         });        
     }
 
-    afterPromise();
+    afterPromise()
+
+    
 
 //// RECUPERATION OF FORM DATA ////
 
     const btnOrder = document.querySelector('#order')
-    btnOrder.addEventListener('click', () =>{
-        console.log('click order is working')
+    btnOrder.addEventListener('click', (event) =>{
+        event.preventDefault()
 
         // VERIFICATION OF DATA FROM FORM //
 
@@ -265,7 +269,7 @@
                 }
             }
 
-        // collecting value from form //
+        // collecting value from form & stock the products ID //
 
             const userData = {
                 firstName: document.querySelector('#firstName').value,
@@ -273,6 +277,11 @@
                 address: document.querySelector('#address').value,
                 city: document.querySelector('#city').value,
                 email: document.querySelector('#email').value,
+            }
+
+            const idProducts = [];
+                for (let i = 0; i<dataInLocalStorage.length;i++) {
+                idProducts.push(dataInLocalStorage[i].ProductId);
             }
 
         // After tests Send data in LS 
@@ -283,17 +292,36 @@
             }else{
                 console.log('ERROR form')
             }
-            
+        // object to send to server
+           
+            const contact = {
+                userData,
+                idProducts,
+            }
+
+
         //// USE OF METHOD POST WITH FETCH TO SEND THE DATA ON SERVER //// post order postman est ton ami
 
-            const promise = fetch("http://localhost:3000/api/products/order", {
+            const promise = fetch("http://localhost:3000/api/products/order",{
                 method: "POST",
-                body: JSON.stringify(userData),
+                body: JSON.stringify(contact),
                 headers:{
                     "Content-type" : "application/json",
                 }
+                
             })
-        console.log(promise)
+            console.log(promise)
+            /*
+            promise.then(async(response)=>{
+                try{
+                    console.log('response')
+                    console.log(response)
+                    const content = await response.JSON()
+                    console.log(content)
+                }catch(e){
+                    console.log(e)
+                }
+            })*/
     })
     
 
