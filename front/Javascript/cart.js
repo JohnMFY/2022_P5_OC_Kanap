@@ -139,7 +139,9 @@
                         let productsTotalPrice = 0
 
                         const productsPrice = [];
+
                         for (let price of prices){
+
                             let productPrice = Object.values(price)
                             let productPriceString = productPrice.toString()
                             productsPrice.push(productPriceString)
@@ -189,7 +191,7 @@
 
     
 
-//// RECUPERATION OF FORM DATA ////
+////// RECUPERATION OF FORM DATA //////
 
     const btnOrder = document.querySelector('#order')
     btnOrder.addEventListener('click', (event) =>{
@@ -197,43 +199,50 @@
 
         // VERIFICATION OF DATA FROM FORM //
 
-        // function with a regex for FName LName and City
+        // function with a regex & errorMsg for FName LName and City
+
             const regexTestLetter3_20NothingElse = (test) =>{  //control if there is between 3 to 20 letters, capital autorized and refuse all other characters 
             return  /^[A-Z a-z\s]{3,20}$/.test(test)
             }
+
+            let errorMessage = `Chiffre et symboles ne sont pas autorisé. Nombre de caractères autorisés 3 à 20.`
+
         // First name 
             function firstNameTest(){
 
-                const  firstName = document.querySelector('#firstName').value
-
+                const firstName = document.querySelector('#firstName').value
+                const firstNameError = document.getElementById('firstNameErrorMsg')
+                
                 if(regexTestLetter3_20NothingElse(firstName)){
                     return true
                 } else{
-                    alert ('Chiffre et symboles ne sont pas autorisé.\nVotre prénom doit être de 3 à 20 caractères.')
+                    firstNameError.innerText = errorMessage
                     return false
                 }
             }
         // Last name
             function lastNameTest(){
 
-                const  lastName = document.querySelector('#lastName').value
+                const lastName = document.querySelector('#lastName').value
+                const lastNameError = document.getElementById('lastNameErrorMsg')
 
                 if(regexTestLetter3_20NothingElse(lastName)){
                     return true
                 } else{
-                    alert ('Chiffre et symboles ne sont pas autorisé.\nVotre nom doit être de 3 à 20 caractères.')
+                    lastNameError.innerText = errorMessage
                     return false
                 }
             }           
         // City
             function cityTest(){
 
-                const  city = document.querySelector('#city').value
+                const city = document.querySelector('#city').value
+                const cityError = document.getElementById('cityErrorMsg')
 
                 if(regexTestLetter3_20NothingElse(city)){
                     return true
                 } else{
-                    alert ('Chiffre et symboles ne sont pas autorisé.\nVotre ville doit comporter 3 à 20 caractères.')
+                    cityError.innerText = errorMessage
                     return false
                 }
             }
@@ -244,12 +253,13 @@
 
             function emailTest(){
 
-                const  email = document.querySelector('#email').value
+                const email = document.querySelector('#email').value
+                const emailError = document.getElementById('emailErrorMsg')
 
                 if(regexTestEmail(email)){
                     return true
                 } else{
-                    alert ("L'email n'est pas valide")
+                    emailError.innerText = "L'email n'est pas valide"
                     return false
                 }
             }
@@ -257,19 +267,21 @@
             const regexTestAdress = (test) => {
                 return /^[A-Z a-z 0-9\s]{5,50}$/.test(test)
             }
+
             function addressTest(){
 
-                const  address = document.querySelector('#address').value
+                const address = document.querySelector('#address').value
+                const addressError = document.getElementById('addressErrorMsg')
 
                 if(regexTestAdress (address)){
                     return true
                 } else{
-                    alert ("L'adresse n'est pas valide")
+                    addressError.innerText = "L'adresse n'est pas valide"
                     return false
                 }
             }
 
-        // collecting value from form & stock the products ID //
+        //// collecting value from form & stock the products ID ////
 
             const userData = {
                 firstName: document.querySelector('#firstName').value,
@@ -284,7 +296,7 @@
                 idProducts.push(dataInLocalStorage[i].ProductId);
             }
 
-        // After tests Send data in LS 
+        // After tests Send data in LS //
 
             if(firstNameTest() && lastNameTest() && cityTest() && emailTest() && addressTest()){
                 localStorage.setItem('userData', JSON.stringify(userData))
@@ -292,7 +304,8 @@
             }else{
                 console.log('ERROR form')
             }
-        // object to send to server
+
+        // object to send to server //
            
             const contact = {
                 userData,
@@ -310,7 +323,7 @@
                 }
                 
             })
-            console.log(promise)
+            console.log(promise) // 400
             /*
             promise.then(async(response)=>{
                 try{
