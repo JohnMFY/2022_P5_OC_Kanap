@@ -11,8 +11,9 @@ let productData = [];
 async function productInsertion(){
   await callProducts()
   let productContainer = document.getElementById('items');
+  let article = ''
   for (let i=0; i < productData.length; i++){
-    productContainer.innerHTML += 
+    article += 
     `
       <a href="./product.html?id=${productData[i]._id}">
         <article>
@@ -23,5 +24,6 @@ async function productInsertion(){
       </a>
     `
   }
+  productContainer.innerHTML = article
 }
 productInsertion()

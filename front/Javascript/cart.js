@@ -6,9 +6,9 @@
 
     let boxArticleCart = document.getElementById('cart__items');
     let articlesPromise = []; // promises storage
-    let prices = []
+    let prices = [] // price storage
 
-    async function looping(){
+    async function looping(){ //function who stock all data dynamically
         
         for(let productDataLocalStorage of dataInLocalStorage){
 
@@ -84,11 +84,11 @@
 
             .then(articles => {
 
-                boxArticleCart.innerHTML = articles;
+                boxArticleCart.innerHTML = articles; // dynamically put the product in the DOM
 
                 //// TOTAL PRICE & QUANTITY ////
 
-                    function totalQuantityAndPrice(){
+                    function totalQuantityAndPrice(){ //do the total quantity and total prices of products
 
                         // QUANTITY INTEGRATE IN THE DOM //
                             let productsTotalQuantity = 0
@@ -123,7 +123,7 @@
 
                 //// DELETE PRODUCT OF CART ////
 
-                    const deleteProductFromCart = () =>{
+                    const deleteProductFromCart = () =>{ // function to suppressed product from the DOM and the LocalStorage
 
                         let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
 
@@ -143,38 +143,42 @@
                                 // Remove article of the DOM //
                                 let buttonDelClick = e.target
                                 buttonDelClick.closest('.cart__item').remove()
+
+                                // call to update price and quantity //
                                 totalQuantityAndPrice()   
                             })       
                         } 
                     }
                     deleteProductFromCart()
-
+                
                 //// MODIFICATION OF QUANTITY ////
 
-                    function quantityModification(){  
+                    function quantityModification(){ //function to modify the quantity of the products
+
                         let quantityInput = Array.from(document.querySelectorAll(".itemQuantity"))
-                        
                                     
                         for (let k = 0; k < quantityInput.length; k++){
                               
-                            console.log(quantityInput[k])
                             quantityInput[k].addEventListener("change" , (e) =>{
                                 e.preventDefault()
 
                                 let QuantityInLocalStorage = dataInLocalStorage[k].ProductQuantity
                                 let quantityInputValue = quantityInput[k].value
 
-                                let newQantity = dataInLocalStorage.map((product) => (product.quantityInputValue !== QuantityInLocalStorage))
+                                //change the quantity of the element and update data in LS //
 
+                                let newQantity = dataInLocalStorage.map((product) => (product.quantityInputValue !== QuantityInLocalStorage))
                                 newQantity.ProductQuantity = quantityInputValue
     
                                 dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
                                 localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
+
+                                // call to update price and quantity //
                                 totalQuantityAndPrice()
                             })   
                         }
                     } 
-                    quantityModification()
+                    quantityModification() 
             });
         });        
     }
@@ -185,8 +189,8 @@
 ////// RECUPERATION OF FORM DATA //////
 
     const btnOrder = document.querySelector('#order')
-    btnOrder.addEventListener('click', (event) =>{
-        event.preventDefault()
+    btnOrder.addEventListener('click', (e) =>{
+        e.preventDefault()
 
         // VERIFICATION OF DATA FROM FORM //
 
@@ -205,6 +209,7 @@
                 const firstNameError = document.getElementById('firstNameErrorMsg')
                 
                 if(regexTestLetter3_20NothingElse(firstName)){
+                    firstNameError.innerHTML = ''
                     return true
                 } else{
                     firstNameError.innerText = errorMessage
@@ -218,6 +223,7 @@
                 const lastNameError = document.getElementById('lastNameErrorMsg')
 
                 if(regexTestLetter3_20NothingElse(lastName)){
+                    lastNameError.innerHTML = '' 
                     return true
                 } else{
                     lastNameError.innerText = errorMessage
@@ -282,9 +288,9 @@
                 email: document.querySelector('#email').value,
             }
 
-            const idProducts = [];
+            const products = [];
                 for (let i = 0; i<dataInLocalStorage.length;i++) {
-                idProducts.push(dataInLocalStorage[i].ProductId);
+                products.push(dataInLocalStorage[i].ProductId);
             }
 
         // After tests Send data in LS //
@@ -299,7 +305,7 @@
            
             const userData= {
                 contact,
-                idProducts,
+                products,
             }
 
         //// USE OF METHOD POST WITH FETCH TO SEND THE DATA ON SERVER //// post order postman est ton ami
@@ -316,75 +322,9 @@
             .then(response => response.json())
             .then(data =>{
                 console.log(data)
-                // localStorage.setItem("orderId", orderId de la reponse)
-                //window.location = "confirmation.html"
+                localStorage.setItem("orderId", data.orderId)
+                window.location = `confirmation.html?orderId=${data.orderId}`
             })
             .catch((error) => console.log(error));    
 
     })
-    
-
-
-
-
-
-/*
-
-  **************
- * HTML DU FORM *
-  **************
-
-<div class="cart__order">
-
-    <form method="get" class="cart__order__form">
-
-        <div class="cart__order__form__question">
-
-            <label for="firstName">Prénom: </label>
-            <input type="text" name="firstName" id="firstName" required>
-            <p id="firstNameErrorMsg"><!-- ci est un message d'erreur --></p>
-
-        </div>
-
-        <div class="cart__order__form__question">
-
-            <label for="lastName">Nom: </label>
-            <input type="text" name="lastName" id="lastName" required>
-            <p id="lastNameErrorMsg"></p>
-
-        </div>
-
-        <div class="cart__order__form__question">
-
-            <label for="address">Adresse: </label>
-            <input type="text" name="address" id="address" required>
-            <p id="addressErrorMsg"></p>
-
-        </div>
-
-        <div class="cart__order__form__question">
-
-            <label for="city">Ville: </label>
-            <input type="text" name="city" id="city" required>
-            <p id="cityErrorMsg"></p>
-
-        </div>
-
-        <div class="cart__order__form__question">
-
-            <label for="email">Email: </label>
-            <input type="email" name="email" id="email" required>
-            <p id="emailErrorMsg"></p>
-
-        </div>
-
-        <div class="cart__order__form__submit">
-
-            <input type="submit" value="Commander !" id="order">
-
-        </div>
-        
-    </form>
-
-</div>
-*/
