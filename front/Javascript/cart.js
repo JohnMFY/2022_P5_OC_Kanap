@@ -134,10 +134,7 @@
                         
                     // TOTAL PRICE INTEGRATE IN THE DOM //
 
-                        // /!\ BUG  N'utilise que le dernier price integré dans le DOM /!\
-
                         let productsTotalPrice = 0
-
                         const productsPrice = [];
 
                         for (let price of prices){
@@ -146,7 +143,6 @@
                             let productPriceString = productPrice.toString()
                             productsPrice.push(productPriceString)
                         } 
-                        console.log(productsPrice)
 
                         for (let j = 0; j < productsQuantityInput.length; j++){   
 
@@ -161,28 +157,34 @@
 
                     // /!\ BUG  the quantity of the 1st product change on every change of other product (with the same value of the change done) /!\
 
+                    function quantityModification(){  
+                        let quantityInput = Array.from(document.querySelectorAll(".itemQuantity"))
                         
-                    for (let k = 0; k < productsQuantityInput.length; k++){  
+                                    
+                        for (let k = 0; k < quantityInput.length; k++){  
+                            console.log(quantityInput[k])
+                            quantityInput[k].addEventListener("change" , (e) =>{
+                                e.preventDefault()
 
-                            
+                                let QuantityInLocalStorage = dataInLocalStorage[k].ProductQuantity
+                                let quantityInputValue = quantityInput[k].valueAsNumber
+                                 
+                                const newQantity = dataInLocalStorage.find((e) => e.quantityInputValue !== QuantityInLocalStorage)
+
+                                console.log(QuantityInLocalStorage)
+                                console.log(quantityInputValue)
+                                console.log(newQantity)
                                 
-                        productsQuantityInput[k].addEventListener("change" , (e) => {
+                                newQantity.ProductQuantity = quantityInputValue
+                                console.log(newQantity)
+                                dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
+                
+                                localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
 
-                            let productsQuantityInputValue = productsQuantityInput[k].value
-                            console.log(productsQuantityInputValue)
-                            let quantityModif = dataInLocalStorage[k].ProductQuantity
-                            const newQantity = dataInLocalStorage.find((Product) => (Product.productsQuantityInputValue !== quantityModif))
-                            console.log(newQantity)
-                            newQantity.ProductQuantity = productsQuantityInputValue
-                            console.log(newQantity)
-                            dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
-            
-                            localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
-            
-                            location.reload(); // mettre a jour le LS pas de reload et le champ total
-                        })
-                        
-                    }
+                            })   
+                        }
+                    } 
+                    quantityModification()
             });
         });        
     }
@@ -283,7 +285,7 @@
 
         //// collecting value from form & stock the products ID ////
 
-            const userData = {
+            const contact = {
                 firstName: document.querySelector('#firstName').value,
                 lastName: document.querySelector('#lastName').value,
                 address: document.querySelector('#address').value,
@@ -299,42 +301,36 @@
         // After tests Send data in LS //
 
             if(firstNameTest() && lastNameTest() && cityTest() && emailTest() && addressTest()){
-                localStorage.setItem('userData', JSON.stringify(userData))
-                console.table(userData)
+                localStorage.setItem('contact', JSON.stringify(contact))
             }else{
                 console.log('ERROR form')
             }
 
         // object to send to server //
            
-            const contact = {
-                userData,
+            const userData= {
+                contact,
                 idProducts,
             }
 
-
         //// USE OF METHOD POST WITH FETCH TO SEND THE DATA ON SERVER //// post order postman est ton ami
 
-            const promise = fetch("http://localhost:3000/api/products/order",{
+            const userDataPost = {
                 method: "POST",
-                body: JSON.stringify(contact),
+                body: JSON.stringify(userData),
                 headers:{
                     "Content-type" : "application/json",
-                }
-                
+                },    
+            }
+            console.log(userData)
+            fetch("http://localhost:3000/api/products/order", userDataPost)
+            .then(response => response.json())
+            .then(data =>{
+                console.log(data)
+                //document.location.href = "confirmation.html"
             })
-            console.log(promise) // 400
-            /*
-            promise.then(async(response)=>{
-                try{
-                    console.log('response')
-                    console.log(response)
-                    const content = await response.JSON()
-                    console.log(content)
-                }catch(e){
-                    console.log(e)
-                }
-            })*/
+            .catch((error) => console.log(error));    
+
     })
     
 
