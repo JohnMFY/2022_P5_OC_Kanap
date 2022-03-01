@@ -85,7 +85,42 @@
             .then(articles => {
 
                 boxArticleCart.innerHTML = articles;
-                
+
+                //// TOTAL PRICE & QUANTITY ////
+
+                    function totalQuantityAndPrice(){
+
+                        // QUANTITY INTEGRATE IN THE DOM //
+                            let productsTotalQuantity = 0
+                            let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
+                            
+                            for (let j = 0; j < productsQuantityInput.length; j++){
+                                productsTotalQuantity += productsQuantityInput[j].valueAsNumber                      
+                            }
+
+                            let totalQuantity = document.getElementById('totalQuantity')
+                            totalQuantity.innerHTML = productsTotalQuantity
+                            
+                        // TOTAL PRICE INTEGRATE IN THE DOM //
+                            let productsTotalPrice = 0
+                            const productsPrice = [];
+
+                            for (let price of prices){
+
+                                let productPrice = Object.values(price)
+                                let productPriceString = productPrice.toString()
+                                productsPrice.push(productPriceString)
+                            } 
+
+                            for (let j = 0; j < productsQuantityInput.length; j++){
+                            productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productsPrice[j])
+                            }
+                            
+                            let totalPrice = document.getElementById('totalPrice')
+                            totalPrice.innerHTML = productsTotalPrice
+                    }
+                    totalQuantityAndPrice()
+
                 //// DELETE PRODUCT OF CART ////
 
                     const deleteProductFromCart = () =>{
@@ -103,55 +138,16 @@
 
                                 // Remove item from LocalStorage //
                                 dataInLocalStorage = dataInLocalStorage.filter( e => (e.ProductId !== productInCartId || e.ProductColor !== productInCartColor))
-                                console.log(dataInLocalStorage)
-
                                 localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage)); 
-                                console.log(dataInLocalStorage)
 
                                 // Remove article of the DOM //
                                 let buttonDelClick = e.target
                                 buttonDelClick.closest('.cart__item').remove()
-
+                                totalQuantityAndPrice()   
                             })       
                         } 
                     }
-                    
                     deleteProductFromCart()
-
-                //// TOTAL PRICE & QUANTITY ////
-                
-                    // QUANTITY INTEGRATE IN THE DOM //
-
-                        let productsTotalQuantity = 0
-                        let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
-                        
-                        for (let j = 0; j < productsQuantityInput.length; j++){
-                            productsTotalQuantity += productsQuantityInput[j].valueAsNumber                      
-                        }
-
-                        let totalQuantity = document.getElementById('totalQuantity')
-                        totalQuantity.innerHTML = productsTotalQuantity
-                        
-                    // TOTAL PRICE INTEGRATE IN THE DOM //
-
-                        let productsTotalPrice = 0
-                        const productsPrice = [];
-
-                        for (let price of prices){
-
-                            let productPrice = Object.values(price)
-                            let productPriceString = productPrice.toString()
-                            productsPrice.push(productPriceString)
-                        } 
-
-                        for (let j = 0; j < productsQuantityInput.length; j++){   
-
-                           productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productsPrice[j])
-
-                        }
-                        
-                        let totalPrice = document.getElementById('totalPrice')
-                        totalPrice.innerHTML = productsTotalPrice
 
                 //// MODIFICATION OF QUANTITY ////
 
@@ -174,7 +170,7 @@
     
                                 dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
                                 localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
-
+                                totalQuantityAndPrice()
                             })   
                         }
                     } 
