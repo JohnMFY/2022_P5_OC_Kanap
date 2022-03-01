@@ -155,30 +155,24 @@
 
                 //// MODIFICATION OF QUANTITY ////
 
-                    // /!\ BUG  the quantity of the 1st product change on every change of other product (with the same value of the change done) /!\
-
                     function quantityModification(){  
                         let quantityInput = Array.from(document.querySelectorAll(".itemQuantity"))
                         
                                     
-                        for (let k = 0; k < quantityInput.length; k++){  
+                        for (let k = 0; k < quantityInput.length; k++){
+                              
                             console.log(quantityInput[k])
                             quantityInput[k].addEventListener("change" , (e) =>{
                                 e.preventDefault()
 
                                 let QuantityInLocalStorage = dataInLocalStorage[k].ProductQuantity
-                                let quantityInputValue = quantityInput[k].valueAsNumber
-                                 
-                                const newQantity = dataInLocalStorage.find((e) => e.quantityInputValue !== QuantityInLocalStorage)
+                                let quantityInputValue = quantityInput[k].value
 
-                                console.log(QuantityInLocalStorage)
-                                console.log(quantityInputValue)
-                                console.log(newQantity)
-                                
+                                let newQantity = dataInLocalStorage.map((product) => (product.quantityInputValue !== QuantityInLocalStorage))
+
                                 newQantity.ProductQuantity = quantityInputValue
-                                console.log(newQantity)
+    
                                 dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
-                
                                 localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
 
                             })   
@@ -192,7 +186,6 @@
     afterPromise()
 
     
-
 ////// RECUPERATION OF FORM DATA //////
 
     const btnOrder = document.querySelector('#order')
@@ -319,7 +312,7 @@
                 method: "POST",
                 body: JSON.stringify(userData),
                 headers:{
-                    "Content-type" : "application/json",
+                    "Content-type" : "application/json"
                 },    
             }
             console.log(userData)
@@ -327,7 +320,8 @@
             .then(response => response.json())
             .then(data =>{
                 console.log(data)
-                //document.location.href = "confirmation.html"
+                // localStorage.setItem("orderId", orderId de la reponse)
+                //window.location = "confirmation.html"
             })
             .catch((error) => console.log(error));    
 
