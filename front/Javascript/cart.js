@@ -237,6 +237,7 @@
                 const cityError = document.getElementById('cityErrorMsg')
 
                 if(regexTestLetter3_20NothingElse(city)){
+                    cityError.innerHTML = ''
                     return true
                 } else{
                     cityError.innerText = errorMessage
@@ -254,6 +255,7 @@
                 const emailError = document.getElementById('emailErrorMsg')
 
                 if(regexTestEmail(email)){
+                    emailError.innerText =''
                     return true
                 } else{
                     emailError.innerText = "L'email n'est pas valide"
@@ -271,6 +273,7 @@
                 const addressError = document.getElementById('addressErrorMsg')
 
                 if(regexTestAdress (address)){
+                    addressError.innerText =''
                     return true
                 } else{
                     addressError.innerText = "L'adresse n'est pas valide"
@@ -296,35 +299,37 @@
         // After tests Send data in LS //
 
             if(firstNameTest() && lastNameTest() && cityTest() && emailTest() && addressTest()){
+
                 localStorage.setItem('contact', JSON.stringify(contact))
+
+                // object to send to server //
+            
+                    const userData= {
+                        contact,
+                        products,
+                    }
+
+                //// USE OF METHOD POST WITH FETCH TO SEND THE DATA ON SERVER ////
+
+                    const userDataPost = {
+                        method: "POST",
+                        body: JSON.stringify(userData),
+                        headers:{
+                            "Content-type" : "application/json"
+                        },    
+                    }
+                    fetch("http://localhost:3000/api/products/order", userDataPost)
+                    .then(response => response.json())
+                    .then(data =>{
+                        console.log(data)
+                        localStorage.setItem("orderId", data.orderId)
+                        window.location = `confirmation.html?orderId=${data.orderId}`
+                    })
+                    .catch((error) => console.log(error));    
+
             }else{
                 console.log('ERROR form')
             }
-
-        // object to send to server //
-           
-            const userData= {
-                contact,
-                products,
-            }
-
-        //// USE OF METHOD POST WITH FETCH TO SEND THE DATA ON SERVER //// post order postman est ton ami
-
-            const userDataPost = {
-                method: "POST",
-                body: JSON.stringify(userData),
-                headers:{
-                    "Content-type" : "application/json"
-                },    
-            }
-            console.log(userData)
-            fetch("http://localhost:3000/api/products/order", userDataPost)
-            .then(response => response.json())
-            .then(data =>{
-                console.log(data)
-                localStorage.setItem("orderId", data.orderId)
-                window.location = `confirmation.html?orderId=${data.orderId}`
-            })
-            .catch((error) => console.log(error));    
-
     })
+
+// things to fix : when change of quantity change it in the dom too
