@@ -155,6 +155,8 @@
 
                     function quantityModification(){ //function to modify the quantity of the products
 
+                        let qtyDivDom = Array.from(document.querySelectorAll('.cart__item__content__settings__quantity'))
+                        console.log(qtyDivDom)
                         let quantityInput = Array.from(document.querySelectorAll(".itemQuantity"))
                                     
                         for (let k = 0; k < quantityInput.length; k++){
@@ -164,17 +166,34 @@
 
                                 let QuantityInLocalStorage = dataInLocalStorage[k].ProductQuantity
                                 let quantityInputValue = quantityInput[k].value
+                                
 
-                                //change the quantity of the element and update data in LS //
 
-                                let newQantity = dataInLocalStorage.map((product) => (product.quantityInputValue !== QuantityInLocalStorage))
-                                newQantity.ProductQuantity = quantityInputValue
-    
-                                dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
-                                localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
+                                if (quantityInputValue > 0){
+                                    
+                                    //change the quantity of the element and update data in LS //
 
-                                // call to update price and quantity //
-                                totalQuantityAndPrice()
+                                    let newQantity = dataInLocalStorage.map((product) => (product.quantityInputValue !== QuantityInLocalStorage))
+                                    newQantity.ProductQuantity = quantityInputValue
+                                    
+                                    dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
+                                    localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
+
+                                    // change DOM //
+                                    let qtyDom = qtyDivDom[k]
+                                    console.log(qtyDom)
+                                    
+                                    let newQtyDom = document.createElement('p')
+                                    newQtyDom.textContent = `Qté : ${quantityInputValue}`;
+                                    qtyDom.replaceChild(newQtyDom, qtyDom.firstChild)
+
+                                    // call to update price and quantity //
+                                    totalQuantityAndPrice()
+
+                                }else{
+                                   alert ('Votre quantité ne peut être de 0 !\nSupprimer votre produit si vous ne désirez plus le commander.')
+                                }
+                                
                             })   
                         }
                     } 
@@ -331,5 +350,3 @@
                 console.log('ERROR form')
             }
     })
-
-// things to fix : when change of quantity change it in the dom too
