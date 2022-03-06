@@ -78,9 +78,6 @@
                localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
             }   
 
-         // FUNCTION WHO ADD A QUANTITY TO PRODUCT IN THE LOCAL STORAGE //
-            // penser a en faire une fonction /1\
-
          // SEND PRODUCT OPTION DATA TO LOCAL STORAGE IF THE DATA ARE NOT ALREADY ON IT AND ADJUST QUANTITY IF SAME [PRODUCT & COLOR] ADD //  
             
             if(quantityValue == 0 || colorValue == ""){
@@ -90,12 +87,12 @@
 
                const optionInArray = dataInLocalStorage.find
                ((element) => element.ProductId === idProduct && element.ProductColor === colorSelected);
-
+               alert('Votre produit a bien été ajouté au panier')
                if (optionInArray) {
                      let newQuantity =
                      parseInt(productOptionSelected.ProductQuantity) + parseInt(optionInArray.ProductQuantity);
                      optionInArray.ProductQuantity = newQuantity ;
-                     localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));// penser a en faire une fonction /1\
+                     localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));
                } else {
                   AddProductLocalStorage()
                }

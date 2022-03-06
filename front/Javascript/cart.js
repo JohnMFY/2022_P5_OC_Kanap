@@ -184,7 +184,7 @@
                                     let newQtyDom = document.createElement('p')
                                     newQtyDom.textContent = `Qté : ${quantityInputValue}`
                                     qtyDom.replaceChild(newQtyDom, qtyP)
-
+                                    
                                     // call to update price and quantity //
                                     totalQuantityAndPrice()
 
