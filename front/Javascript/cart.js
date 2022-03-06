@@ -156,7 +156,6 @@
                     function quantityModification(){ //function to modify the quantity of the products
 
                         let qtyDivDom = Array.from(document.querySelectorAll('.cart__item__content__settings__quantity'))
-                        console.log(qtyDivDom)
                         let quantityInput = Array.from(document.querySelectorAll(".itemQuantity"))
                                     
                         for (let k = 0; k < quantityInput.length; k++){
@@ -181,11 +180,10 @@
 
                                     // change DOM //
                                     let qtyDom = qtyDivDom[k]
-                                    console.log(qtyDom)
-                                    
+
                                     let newQtyDom = document.createElement('p')
                                     newQtyDom.textContent = `Qté : ${quantityInputValue}`;
-                                    qtyDom.replaceChild(newQtyDom, qtyDom.firstChild)
+                                    qtyDom.replaceChild(newQtyDom, qtyDom.children[0])
 
                                     // call to update price and quantity //
                                     totalQuantityAndPrice()
