@@ -180,10 +180,10 @@
 
                                     // change DOM //
                                     let qtyDom = qtyDivDom[k]
-
+                                    let qtyP = qtyDom.children[0]
                                     let newQtyDom = document.createElement('p')
-                                    newQtyDom.textContent = `Qté : ${quantityInputValue}`;
-                                    qtyDom.replaceChild(newQtyDom, qtyDom.children[0])
+                                    newQtyDom.textContent = `Qté : ${quantityInputValue}`
+                                    qtyDom.replaceChild(newQtyDom, qtyP)
 
                                     // call to update price and quantity //
                                     totalQuantityAndPrice()
