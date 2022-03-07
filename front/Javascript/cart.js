@@ -172,7 +172,7 @@
                 
             quantityInput[k].addEventListener("change" , () =>{
 
-                let QuantityInLocalStorage = dataInLocalStorage[k].ProductQuantity // Uncaught TypeError: Cannot read properties of undefined (reading 'ProductQuantity') at HTMLInputElement.<anonymous> (cart.js:180:68)
+                let QuantityInLocalStorage = dataInLocalStorage[k].ProductQuantity
                 let quantityInputValue = quantityInput[k].value
                 
                 if (quantityInputValue > 0){
@@ -198,8 +198,7 @@
 
                 }else{
                     alert('Votre quantité ne peut être de 0 !\nSupprimer votre produit si vous ne désirez plus le commander.')
-                }
-                
+                }  
             })   
         }
     } 
