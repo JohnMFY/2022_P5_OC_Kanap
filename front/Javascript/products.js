@@ -89,8 +89,7 @@
                ((element) => element.ProductId === idProduct && element.ProductColor === colorSelected);
                alert('Votre produit a bien été ajouté au panier')
                if (optionInArray) {
-                     let newQuantity =
-                     parseInt(productOptionSelected.ProductQuantity) + parseInt(optionInArray.ProductQuantity);
+                     let newQuantity = parseInt(productOptionSelected.ProductQuantity) + parseInt(optionInArray.ProductQuantity);
                      optionInArray.ProductQuantity = newQuantity ;
                      localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage));
                } else {

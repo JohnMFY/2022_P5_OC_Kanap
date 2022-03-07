@@ -6,7 +6,7 @@
 
     let boxArticleCart = document.getElementById('cart__items');
     let articlesPromise = []; // promises storage
-    let prices = [] // price storage
+    let prices = []; // price storage
 
     async function looping(){ //function who stock all data dynamically
         
@@ -58,7 +58,7 @@
             <div class="cart__item__content__settings">
 
                 <div class="cart__item__content__settings__quantity">
-                    <p>Qté : ${dataLocalStorage.ProductQuantity} </p>
+                    <p>Qté : ${dataLocalStorage.ProductQuantity}</p>
                     <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${dataLocalStorage.ProductQuantity}">
                 </div>
 
@@ -70,10 +70,9 @@
 
         </div>
 
-    </article>
-    `
+        </article>
+        `
     }
-
 
 //// SUPPRESSION MODIFICATION AND CALCUL OF TOTAL PRICE ////
 
@@ -83,126 +82,128 @@
             Promise.all(articlesPromesse) // Recuperation of all promise
 
             .then(articles => {
-
-                boxArticleCart.innerHTML = articles; // dynamically put the product in the DOM
+                
+                boxArticleCart.innerHTML = articles // dynamically put the product in the DOM
 
                 //// TOTAL PRICE & QUANTITY ////
-
-                    function totalQuantityAndPrice(){ //do the total quantity and total prices of products
-
-                        // QUANTITY INTEGRATE IN THE DOM //
-                            let productsTotalQuantity = 0
-                            let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
-                            
-                            for (let j = 0; j < productsQuantityInput.length; j++){
-                                productsTotalQuantity += productsQuantityInput[j].valueAsNumber                      
-                            }
-
-                            let totalQuantity = document.getElementById('totalQuantity')
-                            totalQuantity.innerHTML = productsTotalQuantity
-                            
-                        // TOTAL PRICE INTEGRATE IN THE DOM //
-                            let productsTotalPrice = 0
-                            const productsPrice = [];
-
-                            for (let price of prices){
-
-                                let productPrice = Object.values(price)
-                                let productPriceString = productPrice.toString()
-                                productsPrice.push(productPriceString)
-                            } 
-
-                            for (let j = 0; j < productsQuantityInput.length; j++){
-                            productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productsPrice[j])
-                            }
-                            
-                            let totalPrice = document.getElementById('totalPrice')
-                            totalPrice.innerHTML = productsTotalPrice
-                    }
                     totalQuantityAndPrice()
 
                 //// DELETE PRODUCT OF CART ////
-
-                    const deleteProductFromCart = () =>{ // function to suppressed product from the DOM and the LocalStorage
-
-                        let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
-
-                        for(let i = 0; i < deleteBtn.length; i++){
-
-                            let buttonDel = deleteBtn[i]
-                            let productInCart = document.querySelectorAll('.cart__item')
-                            let productInCartId = productInCart[i].dataset.id
-                            let productInCartColor = productInCart[i].dataset.color
-
-                            buttonDel.addEventListener('click', function(e){
-
-                                // Remove item from LocalStorage //
-                                dataInLocalStorage = dataInLocalStorage.filter( e => (e.ProductId !== productInCartId || e.ProductColor !== productInCartColor))
-                                localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage)); 
-
-                                // Remove article of the DOM //
-                                let buttonDelClick = e.target
-                                buttonDelClick.closest('.cart__item').remove()
-
-                                // call to update price and quantity //
-                                totalQuantityAndPrice()   
-                            })       
-                        } 
-                    }
                     deleteProductFromCart()
-                
+
                 //// MODIFICATION OF QUANTITY ////
-
-                    function quantityModification(){ //function to modify the quantity of the products
-
-                        let qtyDivDom = Array.from(document.querySelectorAll('.cart__item__content__settings__quantity'))
-                        let quantityInput = Array.from(document.querySelectorAll(".itemQuantity"))
-                                    
-                        for (let k = 0; k < quantityInput.length; k++){
-                              
-                            quantityInput[k].addEventListener("change" , (e) =>{
-                                e.preventDefault()
-
-                                let QuantityInLocalStorage = dataInLocalStorage[k].ProductQuantity
-                                let quantityInputValue = quantityInput[k].value
-                                
-
-
-                                if (quantityInputValue > 0){
-                                    
-                                    //change the quantity of the element and update data in LS //
-
-                                    let newQantity = dataInLocalStorage.map((product) => (product.quantityInputValue !== QuantityInLocalStorage))
-                                    newQantity.ProductQuantity = quantityInputValue
-                                    
-                                    dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
-                                    localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
-
-                                    // change DOM //
-                                    let qtyDom = qtyDivDom[k]
-                                    let qtyP = qtyDom.children[0]
-                                    let newQtyDom = document.createElement('p')
-                                    newQtyDom.textContent = `Qté : ${quantityInputValue}`
-                                    qtyDom.replaceChild(newQtyDom, qtyP)
-                                    
-                                    // call to update price and quantity //
-                                    totalQuantityAndPrice()
-
-                                }else{
-                                   alert ('Votre quantité ne peut être de 0 !\nSupprimer votre produit si vous ne désirez plus le commander.')
-                                }
-                                
-                            })   
-                        }
-                    } 
-                    quantityModification() 
+                    quantityModification()
             });
-        });        
+        }); 
     }
 
     afterPromise()
 
+//// TOTAL PRICE & QUANTITY ////
+
+    function totalQuantityAndPrice(){ //do the total quantity and total prices of products
+
+        // QUANTITY INTEGRATE IN THE DOM //
+            let productsTotalQuantity = 0
+            let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
+            
+            for (let j = 0; j < productsQuantityInput.length; j++){
+                productsTotalQuantity += productsQuantityInput[j].valueAsNumber                      
+            }
+
+            let totalQuantity = document.getElementById('totalQuantity')
+            totalQuantity.innerHTML = productsTotalQuantity
+            
+        // TOTAL PRICE INTEGRATE IN THE DOM //
+            let productsTotalPrice = 0
+            const productsPrice = [];
+
+            for (let price of prices){
+
+                let productPrice = Object.values(price)
+                let productPriceString = productPrice.toString()
+                productsPrice.push(productPriceString)
+            } 
+
+            for (let j = 0; j < productsQuantityInput.length; j++){
+            productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productsPrice[j])
+            }
+            
+            let totalPrice = document.getElementById('totalPrice')
+            totalPrice.innerHTML = productsTotalPrice
+    }
+
+//// DELETE PRODUCT OF CART ////
+
+    const deleteProductFromCart = () =>{ // function to suppressed product from the DOM and the LocalStorage
+
+        let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
+
+        for(let i = 0; i < deleteBtn.length; i++){
+
+            let buttonDel = deleteBtn[i]
+            let productInCart = document.querySelectorAll('.cart__item')
+            let productInCartId = productInCart[i].dataset.id
+            let productInCartColor = productInCart[i].dataset.color
+
+            buttonDel.addEventListener('click', function(e){
+
+                // Remove item from LocalStorage //
+                dataInLocalStorage = dataInLocalStorage.filter( e => (e.ProductId !== productInCartId || e.ProductColor !== productInCartColor))
+                localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage)); 
+
+                // Remove article of the DOM //
+                let buttonDelClick = e.target
+                buttonDelClick.closest('.cart__item').remove()
+
+                // call to update price and quantity //
+                totalQuantityAndPrice() 
+            })       
+        } 
+    }
+
+//// MODIFICATION OF QUANTITY ////
+
+    function quantityModification(){ //function to modify the quantity of the products
+
+        let quantityInput = Array.from(document.querySelectorAll(".itemQuantity"))
+
+        for (let k = 0; k < quantityInput.length; k++){
+                
+            quantityInput[k].addEventListener("change" , () =>{
+
+                let QuantityInLocalStorage = dataInLocalStorage[k].ProductQuantity // Uncaught TypeError: Cannot read properties of undefined (reading 'ProductQuantity') at HTMLInputElement.<anonymous> (cart.js:180:68)
+                let quantityInputValue = quantityInput[k].value
+                
+                if (quantityInputValue > 0){
+
+                    //change the quantity of the element and update data in LS //
+                    let newQantity = dataInLocalStorage.map((product) => (product.quantityInputValue !== QuantityInLocalStorage))
+                    newQantity.ProductQuantity = quantityInputValue
+                    
+                    dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
+                    localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
+
+                    // change DOM //
+                    let qtyDivDom = Array.from(document.querySelectorAll('.cart__item__content__settings__quantity'))
+                    let qtyDom = qtyDivDom[k]
+                    let qtyP = qtyDom.children[0]
     
+                    let newQtyDom = document.createElement('p')
+                    newQtyDom.textContent = `Qté : ${quantityInputValue}`;
+                    qtyDom.replaceChild(newQtyDom, qtyP)
+
+                    // call to update price and quantity //
+                    totalQuantityAndPrice()
+
+                }else{
+                    alert('Votre quantité ne peut être de 0 !\nSupprimer votre produit si vous ne désirez plus le commander.')
+                }
+                
+            })   
+        }
+    } 
+
 ////// RECUPERATION OF FORM DATA //////
 
     const btnOrder = document.querySelector('#order')
@@ -216,7 +217,6 @@
             const regexTestLetter3_20NothingElse = (test) =>{  //control if there is between 3 to 20 letters, capital autorized and refuse all other characters 
             return  /^[A-Z a-z\s]{3,20}$/.test(test)
             }
-
             let errorMessage = `Chiffre et symboles ne sont pas autorisé. Nombre de caractères autorisés 3 à 20.`
 
         // First name 
