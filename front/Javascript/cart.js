@@ -1,6 +1,6 @@
 //// RECUPERATION OF DATA IN LOCALSTORAGE ////
 
-    let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
+let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorage'))
 
 //// LOOP TO GET DATA FROM API AND INCRENTATION OF ARTICLE INNERHTML ////
 
@@ -42,34 +42,25 @@
 
         return `
         <article class="cart__item" data-id="${dataLocalStorage.ProductId}" data-color="${dataLocalStorage.ProductColor}">
-
         <div class="cart__item__img">
             <img src="${dataAPI.imageUrl}" alt="${dataAPI.altTxt}">
         </div>
-
         <div class="cart__item__content">
-
             <div class="cart__item__content__description">
                 <h2>${dataAPI.name}</h2>
                 <p>ProductColor : ${dataLocalStorage.ProductColor} </p>
                 <p>${dataAPI.price} €</p>
             </div>
-
             <div class="cart__item__content__settings">
-
                 <div class="cart__item__content__settings__quantity">
                     <p>Qté : ${dataLocalStorage.ProductQuantity}</p>
                     <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${dataLocalStorage.ProductQuantity}">
                 </div>
-
                 <div class="cart__item__content__settings__delete">
                     <p class="deleteItem">Supprimer</p>
                 </div>
-
             </div>
-
         </div>
-
         </article>
         `
     }
@@ -83,16 +74,17 @@
 
             .then(articles => {
                 
-                boxArticleCart.innerHTML = articles // dynamically put the product in the DOM
-
-                //// TOTAL PRICE & QUANTITY ////
-                    totalQuantityAndPrice()
-
+                boxArticleCart.innerHTML = articles.join('') // dynamically put the product in the DOM
+            
                 //// DELETE PRODUCT OF CART ////
-                    deleteProductFromCart()
+                    deleteProductFromCart(dataInLocalStorage)
 
                 //// MODIFICATION OF QUANTITY ////
-                    quantityModification()
+                    quantityModification(dataInLocalStorage)  
+
+                //// TOTAL PRICE & QUANTITY ////
+                    totalQuantityAndPrice(dataInLocalStorage)
+
             });
         }); 
     }
@@ -101,7 +93,7 @@
 
 //// TOTAL PRICE & QUANTITY ////
 
-    function totalQuantityAndPrice(){ //do the total quantity and total prices of products
+    function totalQuantityAndPrice(dataInLocalStorage){ //do the total quantity and total prices of products
 
         // QUANTITY INTEGRATE IN THE DOM //
             let productsTotalQuantity = 0
@@ -135,7 +127,7 @@
 
 //// DELETE PRODUCT OF CART ////
 
-    const deleteProductFromCart = () =>{ // function to suppressed product from the DOM and the LocalStorage
+    const deleteProductFromCart = (dataInLocalStorage) =>{ // function to suppressed product from the DOM and the LocalStorage
 
         let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
 
@@ -164,12 +156,16 @@
 
 //// MODIFICATION OF QUANTITY ////
 
-    function quantityModification(){ //function to modify the quantity of the products
+    function quantityModification(dataInLocalStorage){ //function to modify the quantity of the products
 
         let quantityInput = Array.from(document.querySelectorAll(".itemQuantity"))
+        let qtyDivDom = Array.from(document.querySelectorAll('.cart__item__content__settings__quantity'))
 
         for (let k = 0; k < quantityInput.length; k++){
+
                 
+                
+
             quantityInput[k].addEventListener("change" , () =>{
 
                 let QuantityInLocalStorage = dataInLocalStorage[k].ProductQuantity
@@ -183,18 +179,17 @@
                     
                     dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
                     localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
-
+                
                     // change DOM //
-                    let qtyDivDom = Array.from(document.querySelectorAll('.cart__item__content__settings__quantity'))
                     let qtyDom = qtyDivDom[k]
                     let qtyP = qtyDom.children[0]
-    
                     let newQtyDom = document.createElement('p')
                     newQtyDom.textContent = `Qté : ${quantityInputValue}`;
                     qtyDom.replaceChild(newQtyDom, qtyP)
 
+                    
                     // call to update price and quantity //
-                    totalQuantityAndPrice()
+                    totalQuantityAndPrice(dataInLocalStorage)
 
                 }else{
                     alert('Votre quantité ne peut être de 0 !\nSupprimer votre produit si vous ne désirez plus le commander.')

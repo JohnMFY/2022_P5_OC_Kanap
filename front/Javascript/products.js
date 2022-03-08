@@ -15,6 +15,7 @@
    ////// DATA TO INSERT DYNAMICALLY IN THE DOM FOR THE PRODUCT CARD //////
       async function productDataDisplay(){
          await callProductById()
+         
          // TITLE //
          let productTitle = document.querySelector('title')
          productTitle.innerHTML=`${productData.name}`
