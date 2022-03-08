@@ -96,6 +96,7 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
     function totalQuantityAndPrice(dataInLocalStorage){ //do the total quantity and total prices of products
 
         // QUANTITY INTEGRATE IN THE DOM //
+
             let productsTotalQuantity = 0
             let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
             
@@ -123,6 +124,7 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
             
             let totalPrice = document.getElementById('totalPrice')
             totalPrice.innerHTML = productsTotalPrice
+
     }
 
 //// DELETE PRODUCT OF CART ////
@@ -149,7 +151,7 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
                 buttonDelClick.closest('.cart__item').remove()
 
                 // call to update price and quantity //
-                totalQuantityAndPrice() 
+                totalQuantityAndPrice(dataInLocalStorage) 
             })       
         } 
     }
