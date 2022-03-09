@@ -98,15 +98,24 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
         // QUANTITY INTEGRATE IN THE DOM //
 
             let productsTotalQuantity = 0
-            let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
-            
-            for (let j = 0; j < productsQuantityInput.length; j++){
-                productsTotalQuantity += productsQuantityInput[j].valueAsNumber                      
+
+            const productsQuantity = [];
+            for (let product of dataInLocalStorage){
+
+                let productQuantity = product.ProductQuantity
+                productsQuantity.push(parseInt(productQuantity))      
             }
+
+            const sum = productsQuantity.reduce(add, 0);
+            function add(a, b) {
+            return a + b;
+            }
+            productsTotalQuantity = sum
+            console.log(productsTotalQuantity)
 
             let totalQuantity = document.getElementById('totalQuantity')
             totalQuantity.innerHTML = productsTotalQuantity
-            
+
         // TOTAL PRICE INTEGRATE IN THE DOM //
             let productsTotalPrice = 0
             const productsPrice = [];
@@ -118,8 +127,8 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
                 productsPrice.push(productPriceString)
             } 
 
-            for (let j = 0; j < productsQuantityInput.length; j++){
-            productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productsPrice[j])
+            for (let j = 0; j < dataInLocalStorage.length; j++){
+            productsTotalPrice += (productsQuantity[j] * productsPrice[j])
             }
             
             let totalPrice = document.getElementById('totalPrice')
