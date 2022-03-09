@@ -93,12 +93,11 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
 //// TOTAL PRICE & QUANTITY ////
 
     function totalQuantityAndPrice(){ //do the total quantity and total prices of products
-        // QUANTITY INTEGRATE IN THE DOM //
 
+        // QUANTITY INTEGRATE IN THE DOM //
             let productsTotalQuantity = 0
             let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
             let articles = Array.from(document.getElementsByClassName('cart__item'))
-
             
             for (let j = 0; j < productsQuantityInput.length; j++){
                 productsTotalQuantity += productsQuantityInput[j].valueAsNumber                      
@@ -130,10 +129,6 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
 
                 productsTotalPrice += quantity * prix
             }
-
-            // for (let j = 0; j < productsQuantityInput.length; j++){
-            //     productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productsPrice[j])
-            // }
 
             let totalPrice = document.getElementById('totalPrice')
             totalPrice.innerHTML = productsTotalPrice
@@ -188,7 +183,7 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
                     let newQantity = dataInLocalStorage.map((product) => (product.quantityInputValue !== QuantityInLocalStorage))
                     newQantity.ProductQuantity = quantityInputValue
                     
-                    // maj du localstorage
+                    // Update localstorage
                     let productId = quantityInput[k].closest('article').dataset.id
                     let productColor = quantityInput[k].closest('article').dataset.color
 
@@ -198,7 +193,6 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
                         }
                     }
 
-                    // dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
                     localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
                 
                     // change DOM //
@@ -207,8 +201,7 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
                     let newQtyDom = document.createElement('p')
                     newQtyDom.textContent = `Qté : ${quantityInputValue}`;
                     qtyDom.replaceChild(newQtyDom, qtyP)
-
-                    
+  
                     // call to update price and quantity //
                     totalQuantityAndPrice()
 
