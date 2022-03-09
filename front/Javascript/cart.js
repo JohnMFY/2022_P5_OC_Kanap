@@ -77,14 +77,13 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
                 boxArticleCart.innerHTML = articles.join('') // dynamically put the product in the DOM
             
                 //// DELETE PRODUCT OF CART ////
-                    deleteProductFromCart(dataInLocalStorage)
+                    deleteProductFromCart()
 
                 //// MODIFICATION OF QUANTITY ////
-                    quantityModification(dataInLocalStorage)  
+                    quantityModification()  
 
                 //// TOTAL PRICE & QUANTITY ////
-                    totalQuantityAndPrice(dataInLocalStorage)
-
+                    totalQuantityAndPrice()
             });
         }); 
     }
@@ -93,52 +92,56 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
 
 //// TOTAL PRICE & QUANTITY ////
 
-    function totalQuantityAndPrice(dataInLocalStorage){ //do the total quantity and total prices of products
-
+    function totalQuantityAndPrice(){ //do the total quantity and total prices of products
         // QUANTITY INTEGRATE IN THE DOM //
 
             let productsTotalQuantity = 0
+            let productsQuantityInput = Array.from(document.getElementsByClassName('itemQuantity'))
+            let articles = Array.from(document.getElementsByClassName('cart__item'))
 
-            const productsQuantity = [];
-            for (let product of dataInLocalStorage){
-
-                let productQuantity = product.ProductQuantity
-                productsQuantity.push(parseInt(productQuantity))      
+            
+            for (let j = 0; j < productsQuantityInput.length; j++){
+                productsTotalQuantity += productsQuantityInput[j].valueAsNumber                      
             }
-
-            const sum = productsQuantity.reduce(add, 0);
-            function add(a, b) {
-            return a + b;
-            }
-            productsTotalQuantity = sum
-            console.log(productsTotalQuantity)
 
             let totalQuantity = document.getElementById('totalQuantity')
             totalQuantity.innerHTML = productsTotalQuantity
-
+            
         // TOTAL PRICE INTEGRATE IN THE DOM //
             let productsTotalPrice = 0
-            const productsPrice = [];
 
-            for (let price of prices){
+            for(let article of articles){
+                let productId = article.dataset.id
+                let productColor = article.dataset.color
+                let quantity = 0
+                let prix = 0
 
-                let productPrice = Object.values(price)
-                let productPriceString = productPrice.toString()
-                productsPrice.push(productPriceString)
-            } 
+                for(let productLS of dataInLocalStorage){
+                    if(productLS["ProductId"] == productId && productLS["ProductColor"] == productColor){
+                        quantity = productLS["ProductQuantity"]
+                    }
+                }
 
-            for (let j = 0; j < dataInLocalStorage.length; j++){
-            productsTotalPrice += (productsQuantity[j] * productsPrice[j])
+                for(let price of prices){
+                    if(price[productId] !== undefined){
+                        prix = price[productId]
+                    }
+                }
+
+                productsTotalPrice += quantity * prix
             }
-            
+
+            // for (let j = 0; j < productsQuantityInput.length; j++){
+            //     productsTotalPrice += (productsQuantityInput[j].valueAsNumber * productsPrice[j])
+            // }
+
             let totalPrice = document.getElementById('totalPrice')
             totalPrice.innerHTML = productsTotalPrice
-
     }
 
 //// DELETE PRODUCT OF CART ////
 
-    const deleteProductFromCart = (dataInLocalStorage) =>{ // function to suppressed product from the DOM and the LocalStorage
+    const deleteProductFromCart = () =>{ // function to suppressed product from the DOM and the LocalStorage
 
         let deleteBtn = Array.from(document.getElementsByClassName('deleteItem')) // create an array of the HTMLcollection
 
@@ -160,26 +163,23 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
                 buttonDelClick.closest('.cart__item').remove()
 
                 // call to update price and quantity //
-                totalQuantityAndPrice(dataInLocalStorage) 
+                totalQuantityAndPrice() 
+                quantityModification()
             })       
         } 
     }
 
 //// MODIFICATION OF QUANTITY ////
 
-    function quantityModification(dataInLocalStorage){ //function to modify the quantity of the products
+    function quantityModification(){ //function to modify the quantity of the products
 
         let quantityInput = Array.from(document.querySelectorAll(".itemQuantity"))
         let qtyDivDom = Array.from(document.querySelectorAll('.cart__item__content__settings__quantity'))
 
-        for (let k = 0; k < quantityInput.length; k++){
-
-                
-                
-
+        for (let k = 0; k < quantityInput.length; k++){            
             quantityInput[k].addEventListener("change" , () =>{
 
-                let QuantityInLocalStorage = dataInLocalStorage[k].ProductQuantity
+                let QuantityInLocalStorage = qtyDivDom[k]
                 let quantityInputValue = quantityInput[k].value
                 
                 if (quantityInputValue > 0){
@@ -188,7 +188,17 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
                     let newQantity = dataInLocalStorage.map((product) => (product.quantityInputValue !== QuantityInLocalStorage))
                     newQantity.ProductQuantity = quantityInputValue
                     
-                    dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
+                    // maj du localstorage
+                    let productId = quantityInput[k].closest('article').dataset.id
+                    let productColor = quantityInput[k].closest('article').dataset.color
+
+                    for(let product of dataInLocalStorage){
+                        if(product.ProductId == productId && product.ProductColor == productColor){
+                            product.ProductQuantity = newQantity.ProductQuantity
+                        }
+                    }
+
+                    // dataInLocalStorage[k].ProductQuantity = newQantity.ProductQuantity
                     localStorage.setItem('productDataLocalStorage', JSON.stringify(dataInLocalStorage))
                 
                     // change DOM //
@@ -200,7 +210,7 @@ let dataInLocalStorage = JSON.parse(localStorage.getItem('productDataLocalStorag
 
                     
                     // call to update price and quantity //
-                    totalQuantityAndPrice(dataInLocalStorage)
+                    totalQuantityAndPrice()
 
                 }else{
                     alert('Votre quantité ne peut être de 0 !\nSupprimer votre produit si vous ne désirez plus le commander.')
